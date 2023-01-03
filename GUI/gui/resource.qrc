@@ -1,0 +1,28 @@
+<RCC>
+  <qresource prefix="icon">
+    <file>icon/close-window-64.ico</file>
+    <file>icon/activity-feed-32.ico</file>
+    <file>icon/add-database-32.ico</file>
+    <file>icon/add-database-48.ico</file>
+    <file>icon/add-database-64.ico</file>
+    <file>icon/add-file-path1.ico</file>
+    <file>icon/add-file-path2.ico</file>
+    <file>icon/add-file-path3.ico</file>
+    <file>icon/add-photo-camera1.ico</file>
+    <file>icon/add-photo-camera2.ico</file>
+    <file>icon/add-photo-camera3.ico</file>
+    <file>icon/add-photo-camera4.ico</file>
+    <file>icon/add-photo-camera5.ico</file>
+    <file>icon/add-to-database.ico</file>
+    <file>icon/add-to-database_32.ico</file>
+    <file>icon/Face_Recognize1.ico</file>
+    <file>icon/Face_Recognize2.ico</file>
+    <file>icon/Face_Recognize13.ico</file>
+    <file>icon/settings-17-32.ico</file>
+    <file>icon/settings-17-48.ico</file>
+    <file>icon/settings-17-64.ico</file>
+    <file>icon/settings-32.ico</file>
+    <file>icon/settings-48.ico</file>
+    <file>icon/settings-64.ico</file>
+  </qresource>
+</RCC>
