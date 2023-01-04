@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="icon">
+    <file>icon/home.png</file>
     <file>icon/close-window-64.ico</file>
     <file>icon/activity-feed-32.ico</file>
     <file>icon/add-database-32.ico</file>

@@ -39,6 +39,10 @@ class MainWindow(QMainWindow):
     #             btn.setAutoExclusive(True)
     #             print("else")
     
+    
+    def on_home_btn_toggled(self):
+        self.ui.stackedWidget.setCurrentIndex(0)
+    
     def on_add_data_btn_toggled(self):
         self.ui.stackedWidget.setCurrentIndex(1)
         
