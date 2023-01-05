@@ -4,54 +4,97 @@ from PyQt5.QtWidgets import QMainWindow, QApplication, QPushButton
 from PyQt5.QtCore import pyqtSlot, QFile, QTextStream, QThread, pyqtSignal, Qt
 import numpy as np
 import cv2 as cv
-from mtcnn import MTCNN
+from mtcnn_cv2 import MTCNN
 from gui_ui import Ui_MainWindow
 from joblib import Parallel,delayed
 from multiprocessing import Queue
-
+import mediapipe as mp
 class VideoStream(QThread):
     stream_signal = pyqtSignal(np.ndarray)
 
     def __init__(self,MPqueue,*arg,**kwargs) -> None:
+        self.face_detector_model = "mtcnn"
         super(VideoStream,self).__init__()
         self.IP = kwargs["IP"]
         self.username = kwargs["username"]
         self.password = kwargs["password"]
         self.MPqueue = MPqueue
+        self._run_flag = True
+    
+    
 
-    def send_queue(self,frame,face):
+            
+    def draw_bbox_mediapipe(self,frame,face,img_row,img_col):
+        rrb = face.location_data.relative_bounding_box
+        x,y = int(img_col*rrb.xmin),int(img_row*rrb.ymin)
+        width,height = int(img_col*rrb.width),int(img_row*rrb.height)
+        cv.rectangle(
+            frame, 
+            (x,y),
+            (x+width,y+height),
+            color = (255,0,0),
+            thickness=1
+        )
+    
+    def draw_bbox_mtcnn(self,frame,face):
         x,y,w,h = face['box']
-        self.MPqueue.put(frame[y:y+h,x:x+w])
-        cv.rectangle(frame,(x,y),(x+w,y+h),color=(0,255,0),thickness=1) 
+        cv.rectangle(frame,(x,y),(x+w,y+h),color=(0,255,0),thickness=1)
+
+    def draw_bbox(self,frame,face,img_row,img_col):
+        if self.face_detector_model == "mediapipe":
+            self.draw_bbox_mediapipe(frame,face,img_row,img_col)
+        else:
+            self.draw_bbox_mtcnn(frame,face)
+
+    def FaceDetection(self):
+        if self.face_detector_model == "mediapipe":
+            return mp.solutions.face_detection.FaceDetection(
+            model_selection = 1
+            )
+        else:
+            return MTCNN()
+
+    def capture_faces(self,Frame):
+        if self.face_detector_model == "mediapipe":
+            return self.face_detector.process(Frame).detections
+        else:
+            return self.face_detector.detect_faces(Frame)
 
     def run(self):
-        face_detector = MTCNN()
-        
-        capture = cv.VideoCapture(f"rtsp://{self.username}:{self.password}@{self.IP}:554/stream2")
+        self.face_detector = self.FaceDetection()
+
+        self.capture = cv.VideoCapture(f"rtsp://{self.username}:{self.password}@{self.IP}:554/stream1")
         while(True):
-            isFrame, Frame = capture.read()
+            isFrame, Frame = self.capture.read()
             if not isFrame:
                 continue
-            faces = face_detector.detect_faces(
-                cv.cvtColor(Frame,cv.COLOR_BGR2RGB)
-            )
+            img_row, img_col = Frame.shape[0],Frame.shape[1]
+            Frame = cv.cvtColor(Frame,cv.COLOR_BGR2RGB)
+            faces = self.capture_faces(Frame)
 
-            Parallel(n_jobs=-1,prefer="threads")(delayed(self.send_queue)(face,Frame) for face in faces)
+            if faces:
+                Parallel(n_jobs=-1,prefer="threads")(delayed(self.draw_bbox)(Frame,face,img_row,img_col) for face in faces)
+
             self.stream_signal.emit(Frame)
             if not self.MPqueue.empty():
                 self.MPqueue.get()
+
+
+    def stop(self):
+        self.capture.release()
+        self._run_flag=False
+        self.wait()
 
 
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
-        self.display_width = 640
-        self.display_height = 480
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         self.ui.menu_btn.clicked[bool].connect(self.changeState)
-
+        self.display_height = 590
+        self.display_width = 733
         self.ui.stackedWidget.setCurrentIndex(0)
         self.ui.sidebar.hide()
         self.MPQueue = Queue()
@@ -59,7 +102,7 @@ class MainWindow(QMainWindow):
             self.MPQueue,
             username="aa2232786",
             password="aa2232786",
-            IP="192.168.1.105"
+            IP="192.168.1.103"
         )        
         self.video_thread.stream_signal.connect(self.update_frame)
         self.video_thread.start()
@@ -67,10 +110,10 @@ class MainWindow(QMainWindow):
     @pyqtSlot(np.ndarray)
     def update_frame(self,frame):
         qt_frame = self.convert_cv_qt(frame)
+        self.ui.label_2.setPixmap(qt_frame)
        
 
-    def convert_cv_qt(self,frame):
-        rgb_frame = cv.cvtColor(frame, cv.COLOR_BGR2RGB)
+    def convert_cv_qt(self,rgb_frame):
         h, w, ch = rgb_frame.shape
         bytes_per_line = ch * w
         convert_to_Qt_format = QtGui.QImage(rgb_frame.data, w, h, bytes_per_line, QtGui.QImage.Format_RGB888)
