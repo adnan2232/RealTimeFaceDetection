@@ -64,6 +64,7 @@ class VideoStream(QThread):
         self.face_detector = self.FaceDetection()
 
         self.capture = cv.VideoCapture(f"rtsp://{self.username}:{self.password}@{self.IP}:554/stream1")
+        # self.capture = cv.VideoCapture(0)
         while(True):
             isFrame, Frame = self.capture.read()
             if not isFrame:
@@ -97,6 +98,11 @@ class MainWindow(QMainWindow):
         self.display_width = 733
         self.ui.stackedWidget.setCurrentIndex(0)
         self.ui.sidebar.hide()
+
+        self.ui.detection_model_CB.activated.connect(self.foo1)
+        self.ui.recognition_model_CB.activated.connect(self.foo2)
+        self.ui.processors_CB.activated.connect(self.foo3)
+
         self.MPQueue = Queue()
         self.video_thread =VideoStream(
             self.MPQueue,
@@ -112,7 +118,6 @@ class MainWindow(QMainWindow):
         qt_frame = self.convert_cv_qt(frame)
         self.ui.label_2.setPixmap(qt_frame)
        
-
     def convert_cv_qt(self,rgb_frame):
         h, w, ch = rgb_frame.shape
         bytes_per_line = ch * w
@@ -121,25 +126,10 @@ class MainWindow(QMainWindow):
         return QtGui.QPixmap.fromImage(p)
 
     def changeState(self, pressed):
-        # print(pressed)
         if pressed:
             self.ui.sidebar.show()
         else:
             self.ui.sidebar.hide()
-
-    # def on_stackedWidget_currentChanged(self, index):
-    #     btn_list = self.ui.sidebar.findChildren(QPushButton)
-    #     print(index)
-
-    #     for btn in btn_list:
-    #         if index in [5, 6]:
-    #             btn.setAutoExclusive(False)
-    #             btn.setChecked(False)
-    #             print("if")
-    #         else:
-    #             btn.setAutoExclusive(True)
-    #             print("else")
-    
     
     def on_home_btn_toggled(self):
         self.ui.stackedWidget.setCurrentIndex(0)
@@ -158,6 +148,18 @@ class MainWindow(QMainWindow):
 
     def on_add_fp_btn_toggled(self):
         self.ui.stackedWidget.setCurrentIndex(5)
+    
+    def foo1(self):
+        # self.video_thread.face_detector_model = self.ui.detection_model_CB.currentText().lower()
+        print(self.ui.detection_model_CB.currentText().lower())
+    
+    def foo2(self):
+        # self.video_thread.face_recognizer_model = self.ui.recognition_model_CB.currentText().lower()
+        print(self.ui.recognition_model_CB.currentText().lower())
+    
+    def foo3(self):
+        # self.video_thread.processors = self.ui.processors_CB.currentText()
+        print(self.ui.processors_CB.currentText())
 
 
 

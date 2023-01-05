@@ -10,27 +10,36 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
+import os
+
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(927, 672)
+
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         font = QtGui.QFont()
         font.setFamily("Times New Roman")
         font.setPointSize(10)
         font.setBold(True)
         font.setWeight(75)
+
         self.centralwidget.setFont(font)
         self.centralwidget.setObjectName("centralwidget")
+
         self.gridLayout = QtWidgets.QGridLayout(self.centralwidget)
         self.gridLayout.setContentsMargins(0, 0, 0, 0)
         self.gridLayout.setSpacing(0)
         self.gridLayout.setObjectName("gridLayout")
+
+        # header
         self.header = QtWidgets.QWidget(self.centralwidget)
         self.header.setObjectName("header")
+        # layout for header
         self.horizontalLayout_2 = QtWidgets.QHBoxLayout(self.header)
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
+        # menu button
         self.menu_btn = QtWidgets.QPushButton(self.header)
         self.menu_btn.setText("")
         icon = QtGui.QIcon()
@@ -42,23 +51,38 @@ class Ui_MainWindow(object):
         self.menu_btn.setAutoExclusive(True)
         self.menu_btn.setObjectName("menu_btn")
         self.horizontalLayout_2.addWidget(self.menu_btn)
+
+        # header spacer1
         spacerItem = QtWidgets.QSpacerItem(369, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_2.addItem(spacerItem)
+
+        # face recognition label
         self.fr_label = QtWidgets.QLabel(self.header)
         self.fr_label.setScaledContents(True)
         self.fr_label.setAlignment(QtCore.Qt.AlignCenter)
         self.fr_label.setObjectName("fr_label")
         self.horizontalLayout_2.addWidget(self.fr_label)
+
+        # header spacer2
         spacerItem1 = QtWidgets.QSpacerItem(369, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_2.addItem(spacerItem1)
+
+        # header in central widget grid
         self.gridLayout.addWidget(self.header, 0, 0, 1, 2)
+
+
+        # sidebar
         self.sidebar = QtWidgets.QWidget(self.centralwidget)
         self.sidebar.setObjectName("sidebar")
+
+        # vertical layout for buttons
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.sidebar)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
         self.verticalLayout = QtWidgets.QVBoxLayout()
         self.verticalLayout.setSpacing(0)
         self.verticalLayout.setObjectName("verticalLayout")
+
+        # home button
         self.home_btn = QtWidgets.QPushButton(self.sidebar)
         icon1 = QtGui.QIcon()
         icon1.addPixmap(QtGui.QPixmap("icon/home.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
@@ -68,6 +92,8 @@ class Ui_MainWindow(object):
         self.home_btn.setAutoExclusive(True)
         self.home_btn.setObjectName("home_btn")
         self.verticalLayout.addWidget(self.home_btn)
+
+        # add data button
         self.add_data_btn = QtWidgets.QPushButton(self.sidebar)
         icon2 = QtGui.QIcon()
         icon2.addPixmap(QtGui.QPixmap("icon/add-database-32.ico"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
@@ -77,6 +103,8 @@ class Ui_MainWindow(object):
         self.add_data_btn.setAutoExclusive(True)
         self.add_data_btn.setObjectName("add_data_btn")
         self.verticalLayout.addWidget(self.add_data_btn)
+
+        # recognize face button
         self.recg_face_btn = QtWidgets.QPushButton(self.sidebar)
         icon3 = QtGui.QIcon()
         icon3.addPixmap(QtGui.QPixmap("icon/Face_Recognize13.ico"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
@@ -86,6 +114,8 @@ class Ui_MainWindow(object):
         self.recg_face_btn.setAutoExclusive(True)
         self.recg_face_btn.setObjectName("recg_face_btn")
         self.verticalLayout.addWidget(self.recg_face_btn)
+
+        # settings panel button
         self.sett_panel_btn = QtWidgets.QPushButton(self.sidebar)
         icon4 = QtGui.QIcon()
         icon4.addPixmap(QtGui.QPixmap("icon/settings-17-32.ico"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
@@ -95,6 +125,8 @@ class Ui_MainWindow(object):
         self.sett_panel_btn.setAutoExclusive(True)
         self.sett_panel_btn.setObjectName("sett_panel_btn")
         self.verticalLayout.addWidget(self.sett_panel_btn)
+
+        # add camera button
         self.add_camera_btn = QtWidgets.QPushButton(self.sidebar)
         icon5 = QtGui.QIcon()
         icon5.addPixmap(QtGui.QPixmap("icon/add-photo-camera1.ico"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
@@ -104,6 +136,8 @@ class Ui_MainWindow(object):
         self.add_camera_btn.setAutoExclusive(True)
         self.add_camera_btn.setObjectName("add_camera_btn")
         self.verticalLayout.addWidget(self.add_camera_btn)
+
+        # add filepath button
         self.add_fp_btn = QtWidgets.QPushButton(self.sidebar)
         icon6 = QtGui.QIcon()
         icon6.addPixmap(QtGui.QPixmap("icon/add-file-path2.ico"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
@@ -113,9 +147,15 @@ class Ui_MainWindow(object):
         self.add_fp_btn.setAutoExclusive(True)
         self.add_fp_btn.setObjectName("add_fp_btn")
         self.verticalLayout.addWidget(self.add_fp_btn)
+
+        # vertical layout in sidedbar
         self.verticalLayout_2.addLayout(self.verticalLayout)
+
+        # sidebar spacer1
         spacerItem2 = QtWidgets.QSpacerItem(20, 399, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.verticalLayout_2.addItem(spacerItem2)
+
+        # close button
         self.close_btn = QtWidgets.QPushButton(self.sidebar)
         icon7 = QtGui.QIcon()
         icon7.addPixmap(QtGui.QPixmap("icon/close-window-64.ico"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
@@ -125,74 +165,222 @@ class Ui_MainWindow(object):
         self.close_btn.setAutoExclusive(True)
         self.close_btn.setObjectName("close_btn")
         self.verticalLayout_2.addWidget(self.close_btn)
+
+        # sidebar in central widget grid layout
         self.gridLayout.addWidget(self.sidebar, 1, 0, 1, 1)
+
+        # content page
         self.content_page = QtWidgets.QWidget(self.centralwidget)
         self.content_page.setObjectName("content_page")
+
+        # content page grid layout
         self.gridLayout_7 = QtWidgets.QGridLayout(self.content_page)
         self.gridLayout_7.setObjectName("gridLayout_7")
+
+        # stacked widget
         self.stackedWidget = QtWidgets.QStackedWidget(self.content_page)
         self.stackedWidget.setObjectName("stackedWidget")
+
+        # home page
         self.home_page = QtWidgets.QWidget()
         self.home_page.setObjectName("home_page")
         self.gridLayout_2 = QtWidgets.QGridLayout(self.home_page)
         self.gridLayout_2.setObjectName("gridLayout_2")
+        # home page in label
         self.label_2 = QtWidgets.QLabel(self.home_page)
         self.label_2.setAlignment(QtCore.Qt.AlignCenter)
         self.label_2.setObjectName("label_2")
         self.gridLayout_2.addWidget(self.label_2, 0, 0, 1, 1)
         self.stackedWidget.addWidget(self.home_page)
+
+        # add data page
         self.add_data_page = QtWidgets.QWidget()
         self.add_data_page.setObjectName("add_data_page")
         self.gridLayout_3 = QtWidgets.QGridLayout(self.add_data_page)
         self.gridLayout_3.setObjectName("gridLayout_3")
+        # add data label
         self.label_3 = QtWidgets.QLabel(self.add_data_page)
         self.label_3.setAlignment(QtCore.Qt.AlignCenter)
         self.label_3.setObjectName("label_3")
         self.gridLayout_3.addWidget(self.label_3, 0, 0, 1, 1)
         self.stackedWidget.addWidget(self.add_data_page)
+
+        # recognize face page
         self.recg_face_page = QtWidgets.QWidget()
         self.recg_face_page.setObjectName("recg_face_page")
         self.gridLayout_4 = QtWidgets.QGridLayout(self.recg_face_page)
         self.gridLayout_4.setObjectName("gridLayout_4")
+        # recognize face label
         self.label_4 = QtWidgets.QLabel(self.recg_face_page)
         self.label_4.setAlignment(QtCore.Qt.AlignCenter)
         self.label_4.setObjectName("label_4")
         self.gridLayout_4.addWidget(self.label_4, 0, 0, 1, 1)
         self.stackedWidget.addWidget(self.recg_face_page)
+
+        # # settings panel page
+        # self.sett_panel_page = QtWidgets.QWidget()
+        # self.sett_panel_page.setObjectName("sett_panel_page")
+        # self.gridLayout_5 = QtWidgets.QGridLayout(self.sett_panel_page)
+        # self.gridLayout_5.setObjectName("gridLayout_5")
+        # # settings panel label
+        # self.label_5 = QtWidgets.QLabel(self.sett_panel_page)
+        # self.label_5.setAlignment(QtCore.Qt.AlignCenter)
+        # self.label_5.setObjectName("label_5")
+        # self.gridLayout_5.addWidget(self.label_5, 0, 0, 1, 1)
+        # self.stackedWidget.addWidget(self.sett_panel_page)
+
+
+        # settings panel start
+
+
         self.sett_panel_page = QtWidgets.QWidget()
         self.sett_panel_page.setObjectName("sett_panel_page")
         self.gridLayout_5 = QtWidgets.QGridLayout(self.sett_panel_page)
         self.gridLayout_5.setObjectName("gridLayout_5")
-        self.label_5 = QtWidgets.QLabel(self.sett_panel_page)
-        self.label_5.setAlignment(QtCore.Qt.AlignCenter)
-        self.label_5.setObjectName("label_5")
-        self.gridLayout_5.addWidget(self.label_5, 0, 0, 1, 1)
+        self.sett_panel_label = QtWidgets.QLabel(self.sett_panel_page)
+        self.sett_panel_label.setScaledContents(True)
+        self.sett_panel_label.setAlignment(QtCore.Qt.AlignCenter)
+        self.sett_panel_label.setObjectName("sett_panel_label")
+        self.gridLayout_5.addWidget(self.sett_panel_label, 0, 1, 1, 2)
+        spacerItem3 = QtWidgets.QSpacerItem(20, 133, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        self.gridLayout_5.addItem(spacerItem3, 1, 1, 1, 1)
+        spacerItem4 = QtWidgets.QSpacerItem(71, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.gridLayout_5.addItem(spacerItem4, 2, 0, 1, 1)
+        self.verticalLayout_3 = QtWidgets.QVBoxLayout()
+        self.verticalLayout_3.setContentsMargins(50, 50, 50, 50)
+        self.verticalLayout_3.setObjectName("verticalLayout_3")
+        self.horizontalLayout = QtWidgets.QHBoxLayout()
+        self.horizontalLayout.setObjectName("horizontalLayout")
+
+
+
+        self.detection_model_label = QtWidgets.QLabel(self.sett_panel_page)
+        self.detection_model_label.setMinimumSize(QtCore.QSize(220, 25))
+        self.detection_model_label.setScaledContents(True)
+        self.detection_model_label.setAlignment(QtCore.Qt.AlignCenter)
+        self.detection_model_label.setObjectName("detection_model_label")
+        self.horizontalLayout.addWidget(self.detection_model_label)
+        spacerItem5 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.horizontalLayout.addItem(spacerItem5)
+        self.detection_model_CB = QtWidgets.QComboBox(self.sett_panel_page)
+        self.detection_model_CB.setMinimumSize(QtCore.QSize(200, 20))
+        self.detection_model_CB.setObjectName("detection_model_CB")
+
+        self.detection_model_CB.addItems(['MTCNN', 'MediaPipe'])
+        # self.detection_model_CB.activated.connect(self.)
+
+
+
+        self.horizontalLayout.addWidget(self.detection_model_CB)
+        self.verticalLayout_3.addLayout(self.horizontalLayout)
+        spacerItem6 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        self.verticalLayout_3.addItem(spacerItem6)
+        self.horizontalLayout_3 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_3.setObjectName("horizontalLayout_3")
+
+
+
+        self.recognition_model_label = QtWidgets.QLabel(self.sett_panel_page)
+        self.recognition_model_label.setMinimumSize(QtCore.QSize(220, 25))
+        self.recognition_model_label.setScaledContents(True)
+        self.recognition_model_label.setAlignment(QtCore.Qt.AlignCenter)
+        self.recognition_model_label.setObjectName("recognition_model_label")
+        self.horizontalLayout_3.addWidget(self.recognition_model_label)
+        spacerItem7 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.horizontalLayout_3.addItem(spacerItem7)
+        self.recognition_model_CB = QtWidgets.QComboBox(self.sett_panel_page)
+        self.recognition_model_CB.setMinimumSize(QtCore.QSize(200, 20))
+        self.recognition_model_CB.setObjectName("recognition_model_CB")
+
+        self.recognition_model_CB.addItems(['FaceNet512', 'ArcFace'])
+        # self.recognition_model_CB.activated.connect(self.)
+
+
+
+        self.horizontalLayout_3.addWidget(self.recognition_model_CB)
+        self.verticalLayout_3.addLayout(self.horizontalLayout_3)
+        spacerItem8 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        self.verticalLayout_3.addItem(spacerItem8)
+        self.horizontalLayout_4 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_4.setObjectName("horizontalLayout_4")
+
+
+
+        self.processors_label = QtWidgets.QLabel(self.sett_panel_page)
+        self.processors_label.setMinimumSize(QtCore.QSize(220, 25))
+        self.processors_label.setScaledContents(True)
+        self.processors_label.setAlignment(QtCore.Qt.AlignCenter)
+        self.processors_label.setObjectName("processors_label")
+        self.horizontalLayout_4.addWidget(self.processors_label)
+        spacerItem9 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.horizontalLayout_4.addItem(spacerItem9)
+        self.processors_CB = QtWidgets.QComboBox(self.sett_panel_page)
+        self.processors_CB.setMinimumSize(QtCore.QSize(200, 20))
+        self.processors_CB.setObjectName("processors_CB")
+        # add number of processors
+        cpu_count = os.cpu_count()
+        processors = []
+        for i in range(1, cpu_count+1):
+            processors.append(str(i))
+        self.processors_CB.addItems(processors)
+        # self.processors_CB.activated.connect(self.)
+
+
+
+
+        self.horizontalLayout_4.addWidget(self.processors_CB)
+        self.verticalLayout_3.addLayout(self.horizontalLayout_4)
+        self.gridLayout_5.addLayout(self.verticalLayout_3, 2, 1, 1, 2)
+        spacerItem10 = QtWidgets.QSpacerItem(70, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.gridLayout_5.addItem(spacerItem10, 2, 3, 1, 1)
+        spacerItem11 = QtWidgets.QSpacerItem(20, 133, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        self.gridLayout_5.addItem(spacerItem11, 3, 2, 1, 1)
         self.stackedWidget.addWidget(self.sett_panel_page)
+
+
+
+        # settings panel end
+
+
+
+        # add camera page
         self.add_camera_page = QtWidgets.QWidget()
         self.add_camera_page.setObjectName("add_camera_page")
         self.gridLayout_6 = QtWidgets.QGridLayout(self.add_camera_page)
         self.gridLayout_6.setObjectName("gridLayout_6")
+        # add camera label
         self.label_6 = QtWidgets.QLabel(self.add_camera_page)
         self.label_6.setAlignment(QtCore.Qt.AlignCenter)
         self.label_6.setObjectName("label_6")
         self.gridLayout_6.addWidget(self.label_6, 0, 0, 1, 1)
         self.stackedWidget.addWidget(self.add_camera_page)
+
+        # add filepath page
         self.add_fp_page = QtWidgets.QWidget()
         self.add_fp_page.setObjectName("add_fp_page")
         self.gridLayout_8 = QtWidgets.QGridLayout(self.add_fp_page)
         self.gridLayout_8.setObjectName("gridLayout_8")
+        # add filepath label
         self.label_7 = QtWidgets.QLabel(self.add_fp_page)
         self.label_7.setAlignment(QtCore.Qt.AlignCenter)
         self.label_7.setObjectName("label_7")
         self.gridLayout_8.addWidget(self.label_7, 0, 0, 1, 1)
         self.stackedWidget.addWidget(self.add_fp_page)
+
+        # stacked widget in content page
         self.gridLayout_7.addWidget(self.stackedWidget, 0, 0, 1, 1)
+
+        # content page in central widget
         self.gridLayout.addWidget(self.content_page, 1, 1, 1, 1)
+
+        # central widget in mainwindow
         MainWindow.setCentralWidget(self.centralwidget)
+
 
         self.retranslateUi(MainWindow)
         self.close_btn.clicked.connect(MainWindow.close)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
+
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -208,9 +396,21 @@ class Ui_MainWindow(object):
         self.label_2.setText(_translate("MainWindow", "STREAM"))
         self.label_3.setText(_translate("MainWindow", "ADD DATA"))
         self.label_4.setText(_translate("MainWindow", "RECOGNIZE FACE"))
-        self.label_5.setText(_translate("MainWindow", "SETTINGS PANEL"))
+
+        # self.label_5.setText(_translate("MainWindow", "SETTINGS PANEL"))
+        
+        self.sett_panel_label.setText(_translate("MainWindow", "SETTINGS PANEL"))
+        self.detection_model_label.setText(_translate("MainWindow", "CHOOSE DETECTION MODEL"))
+        self.recognition_model_label.setText(_translate("MainWindow", "CHOOSE RECOGNITION MODEL"))
+        self.processors_label.setText(_translate("MainWindow", "CHOOSE PROCESSORS"))
+
+
         self.label_6.setText(_translate("MainWindow", "ADD CAMERA"))
         self.label_7.setText(_translate("MainWindow", "ADD FILEPATH"))
+
+    # def foo(self):
+
+
 import resource_rc
 
 
