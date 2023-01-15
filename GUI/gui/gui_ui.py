@@ -265,8 +265,9 @@ class Ui_MainWindow(object):
         self.detection_model_CB = QtWidgets.QComboBox(self.sett_panel_page)
         self.detection_model_CB.setMinimumSize(QtCore.QSize(200, 20))
         self.detection_model_CB.setObjectName("detection_model_CB")
-
-        self.detection_model_CB.addItems(['MTCNN', 'MediaPipe'])
+        self.detection_model_index = {0:"MTCNN",1:"mediapipe"}
+        self.detection_model_CB.addItems(['MTCNN', 'mediapipe'])
+        self.detection_model_CB.setCurrentIndex(1)
         # self.detection_model_CB.activated.connect(self.)
 
 
@@ -320,7 +321,7 @@ class Ui_MainWindow(object):
         # add number of processors
         cpu_count = os.cpu_count()
         processors = []
-        for i in range(1, cpu_count+1):
+        for i in range(2, cpu_count+1):
             processors.append(str(i))
         self.processors_CB.addItems(processors)
         # self.processors_CB.activated.connect(self.)

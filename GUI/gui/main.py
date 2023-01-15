@@ -1,92 +1,12 @@
 import sys
 from PyQt5 import QtGui
-from PyQt5.QtWidgets import QMainWindow, QApplication, QPushButton
-from PyQt5.QtCore import pyqtSlot, QFile, QTextStream, QThread, pyqtSignal, Qt
+from PyQt5.QtWidgets import QMainWindow, QApplication
+from PyQt5.QtCore import pyqtSlot, Qt
 import numpy as np
 import cv2 as cv
-from mtcnn_cv2 import MTCNN
 from gui_ui import Ui_MainWindow
-from joblib import Parallel,delayed
 from multiprocessing import Queue
-import mediapipe as mp
-class VideoStream(QThread):
-    stream_signal = pyqtSignal(np.ndarray)
-
-    def __init__(self,MPqueue,*arg,**kwargs) -> None:
-        self.face_detector_model = "mtcnn"
-        super(VideoStream,self).__init__()
-        self.IP = kwargs["IP"]
-        self.username = kwargs["username"]
-        self.password = kwargs["password"]
-        self.MPqueue = MPqueue
-        self._run_flag = True
-    
-    
-
-            
-    def draw_bbox_mediapipe(self,frame,face,img_row,img_col):
-        rrb = face.location_data.relative_bounding_box
-        x,y = int(img_col*rrb.xmin),int(img_row*rrb.ymin)
-        width,height = int(img_col*rrb.width),int(img_row*rrb.height)
-        cv.rectangle(
-            frame, 
-            (x,y),
-            (x+width,y+height),
-            color = (255,0,0),
-            thickness=1
-        )
-    
-    def draw_bbox_mtcnn(self,frame,face):
-        x,y,w,h = face['box']
-        cv.rectangle(frame,(x,y),(x+w,y+h),color=(0,255,0),thickness=1)
-
-    def draw_bbox(self,frame,face,img_row,img_col):
-        if self.face_detector_model == "mediapipe":
-            self.draw_bbox_mediapipe(frame,face,img_row,img_col)
-        else:
-            self.draw_bbox_mtcnn(frame,face)
-
-    def FaceDetection(self):
-        if self.face_detector_model == "mediapipe":
-            return mp.solutions.face_detection.FaceDetection(
-            model_selection = 1
-            )
-        else:
-            return MTCNN()
-
-    def capture_faces(self,Frame):
-        if self.face_detector_model == "mediapipe":
-            return self.face_detector.process(Frame).detections
-        else:
-            return self.face_detector.detect_faces(Frame)
-
-    def run(self):
-        self.face_detector = self.FaceDetection()
-
-        self.capture = cv.VideoCapture(f"rtsp://{self.username}:{self.password}@{self.IP}:554/stream1")
-        # self.capture = cv.VideoCapture(0)
-        while(True):
-            isFrame, Frame = self.capture.read()
-            if not isFrame:
-                continue
-            img_row, img_col = Frame.shape[0],Frame.shape[1]
-            Frame = cv.cvtColor(Frame,cv.COLOR_BGR2RGB)
-            faces = self.capture_faces(Frame)
-
-            if faces:
-                Parallel(n_jobs=-1,prefer="threads")(delayed(self.draw_bbox)(Frame,face,img_row,img_col) for face in faces)
-
-            self.stream_signal.emit(Frame)
-            if not self.MPqueue.empty():
-                self.MPqueue.get()
-
-
-    def stop(self):
-        self.capture.release()
-        self._run_flag=False
-        self.wait()
-
-
+from videostream import VideoStream
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -108,7 +28,8 @@ class MainWindow(QMainWindow):
             self.MPQueue,
             username="aa2232786",
             password="aa2232786",
-            IP="192.168.1.103"
+            IP="192.168.1.106",
+            detection_model = self.get_detection_model()
         )        
         self.video_thread.stream_signal.connect(self.update_frame)
         self.video_thread.start()
@@ -124,6 +45,12 @@ class MainWindow(QMainWindow):
         convert_to_Qt_format = QtGui.QImage(rgb_frame.data, w, h, bytes_per_line, QtGui.QImage.Format_RGB888)
         p = convert_to_Qt_format.scaled(self.display_width, self.display_height, Qt.KeepAspectRatio)
         return QtGui.QPixmap.fromImage(p)
+
+    def get_detection_model(self):
+        return self.ui.detection_model_index[self.ui.detection_model_CB.currentIndex()]
+
+    def stop_video_stream_thread(self):
+        self.video_thread.stop()
 
     def changeState(self, pressed):
         if pressed:
