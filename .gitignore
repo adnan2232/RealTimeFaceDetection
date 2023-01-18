@@ -105,6 +105,7 @@ celerybeat.pid
 .env
 .venv
 env/
+inner_env/
 venv/
 ENV/
 env.bak/
@@ -131,3 +132,4 @@ dmypy.json
 #datasets
 lfw_home/
 video/
+
