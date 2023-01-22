@@ -19,9 +19,7 @@ class MainWindow(QMainWindow):
         self.ui.stackedWidget.setCurrentIndex(0)
         self.ui.sidebar.hide()
 
-        self.ui.detection_model_CB.activated.connect(self.foo1)
-        self.ui.recognition_model_CB.activated.connect(self.foo2)
-        self.ui.processors_CB.activated.connect(self.foo3)
+        self.ui.save_sett_btn.clicked.connect(self.save_settings)
 
         self.MPQueue = Queue()
         self.video_thread =VideoStream(
@@ -52,41 +50,31 @@ class MainWindow(QMainWindow):
     def stop_video_stream_thread(self):
         self.video_thread.stop()
 
+    def save_settings(self):
+        print(self.ui.detection_model_CB.currentText().lower())
+        print(self.ui.recognition_model_CB.currentText().lower())
+        print(self.ui.processors_CB.currentText())
+
+    # -----don't change this-----
     def changeState(self, pressed):
         if pressed:
             self.ui.sidebar.show()
         else:
             self.ui.sidebar.hide()
-    
     def on_home_btn_toggled(self):
         self.ui.stackedWidget.setCurrentIndex(0)
-    
     def on_add_data_btn_toggled(self):
         self.ui.stackedWidget.setCurrentIndex(1)
-        
     def on_recg_face_btn_toggled(self):
         self.ui.stackedWidget.setCurrentIndex(2)
-
     def on_sett_panel_btn_toggled(self):
         self.ui.stackedWidget.setCurrentIndex(3)
-
     def on_add_camera_btn_toggled(self):
         self.ui.stackedWidget.setCurrentIndex(4)
-
     def on_add_fp_btn_toggled(self):
         self.ui.stackedWidget.setCurrentIndex(5)
+    # -------------------------
     
-    def foo1(self):
-        # self.video_thread.face_detector_model = self.ui.detection_model_CB.currentText().lower()
-        print(self.ui.detection_model_CB.currentText().lower())
-    
-    def foo2(self):
-        # self.video_thread.face_recognizer_model = self.ui.recognition_model_CB.currentText().lower()
-        print(self.ui.recognition_model_CB.currentText().lower())
-    
-    def foo3(self):
-        # self.video_thread.processors = self.ui.processors_CB.currentText()
-        print(self.ui.processors_CB.currentText())
 
 
 

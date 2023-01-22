@@ -217,104 +217,86 @@ class Ui_MainWindow(object):
         self.gridLayout_4.addWidget(self.label_4, 0, 0, 1, 1)
         self.stackedWidget.addWidget(self.recg_face_page)
 
-        # # settings panel page
-        # self.sett_panel_page = QtWidgets.QWidget()
-        # self.sett_panel_page.setObjectName("sett_panel_page")
-        # self.gridLayout_5 = QtWidgets.QGridLayout(self.sett_panel_page)
-        # self.gridLayout_5.setObjectName("gridLayout_5")
-        # # settings panel label
-        # self.label_5 = QtWidgets.QLabel(self.sett_panel_page)
-        # self.label_5.setAlignment(QtCore.Qt.AlignCenter)
-        # self.label_5.setObjectName("label_5")
-        # self.gridLayout_5.addWidget(self.label_5, 0, 0, 1, 1)
-        # self.stackedWidget.addWidget(self.sett_panel_page)
+
+        # --------------------recognize face page end--------------------
 
 
-        # settings panel start
 
+        # --------------------settings panel page start--------------------
 
+        # settings panel page
         self.sett_panel_page = QtWidgets.QWidget()
         self.sett_panel_page.setObjectName("sett_panel_page")
-        self.gridLayout_5 = QtWidgets.QGridLayout(self.sett_panel_page)
-        self.gridLayout_5.setObjectName("gridLayout_5")
+
+
+        # settings panel label
         self.sett_panel_label = QtWidgets.QLabel(self.sett_panel_page)
         self.sett_panel_label.setScaledContents(True)
         self.sett_panel_label.setAlignment(QtCore.Qt.AlignCenter)
         self.sett_panel_label.setObjectName("sett_panel_label")
-        self.gridLayout_5.addWidget(self.sett_panel_label, 0, 1, 1, 2)
-        spacerItem3 = QtWidgets.QSpacerItem(20, 133, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
-        self.gridLayout_5.addItem(spacerItem3, 1, 1, 1, 1)
-        spacerItem4 = QtWidgets.QSpacerItem(71, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-        self.gridLayout_5.addItem(spacerItem4, 2, 0, 1, 1)
-        self.verticalLayout_3 = QtWidgets.QVBoxLayout()
-        self.verticalLayout_3.setContentsMargins(50, 50, 50, 50)
-        self.verticalLayout_3.setObjectName("verticalLayout_3")
-        self.horizontalLayout = QtWidgets.QHBoxLayout()
-        self.horizontalLayout.setObjectName("horizontalLayout")
 
+        # 4 spacers
+        # SP = settings panel, T = top, L = left, R = right, B = bottom, S = spacer
+        SPTS = QtWidgets.QSpacerItem(20, 133, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        SPLS = QtWidgets.QSpacerItem(71, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        SPRS = QtWidgets.QSpacerItem(70, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        SPBS = QtWidgets.QSpacerItem(20, 133, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
 
-
+        # detection model label
         self.detection_model_label = QtWidgets.QLabel(self.sett_panel_page)
         self.detection_model_label.setMinimumSize(QtCore.QSize(220, 25))
         self.detection_model_label.setScaledContents(True)
         self.detection_model_label.setAlignment(QtCore.Qt.AlignCenter)
         self.detection_model_label.setObjectName("detection_model_label")
-        self.horizontalLayout.addWidget(self.detection_model_label)
-        spacerItem5 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-        self.horizontalLayout.addItem(spacerItem5)
+        # detection model combobox
         self.detection_model_CB = QtWidgets.QComboBox(self.sett_panel_page)
         self.detection_model_CB.setMinimumSize(QtCore.QSize(200, 20))
         self.detection_model_CB.setObjectName("detection_model_CB")
         self.detection_model_index = {0:"MTCNN",1:"mediapipe"}
         self.detection_model_CB.addItems(['MTCNN', 'mediapipe'])
         self.detection_model_CB.setCurrentIndex(1)
-        # self.detection_model_CB.activated.connect(self.)
-
-
-
+        # horizontal spacer between detection model label and detection model combobox
+        spacerItem5 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        # detection model cell in horizontal layout
+        self.horizontalLayout = QtWidgets.QHBoxLayout()
+        self.horizontalLayout.setObjectName("horizontalLayout")
+        self.horizontalLayout.addWidget(self.detection_model_label)
+        self.horizontalLayout.addItem(spacerItem5)
         self.horizontalLayout.addWidget(self.detection_model_CB)
-        self.verticalLayout_3.addLayout(self.horizontalLayout)
+
+        # vertical spacer between detection model cell and recognition model cell
         spacerItem6 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
-        self.verticalLayout_3.addItem(spacerItem6)
-        self.horizontalLayout_3 = QtWidgets.QHBoxLayout()
-        self.horizontalLayout_3.setObjectName("horizontalLayout_3")
 
-
-
+        # recognition model label
         self.recognition_model_label = QtWidgets.QLabel(self.sett_panel_page)
         self.recognition_model_label.setMinimumSize(QtCore.QSize(220, 25))
         self.recognition_model_label.setScaledContents(True)
         self.recognition_model_label.setAlignment(QtCore.Qt.AlignCenter)
         self.recognition_model_label.setObjectName("recognition_model_label")
-        self.horizontalLayout_3.addWidget(self.recognition_model_label)
-        spacerItem7 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-        self.horizontalLayout_3.addItem(spacerItem7)
+        # recognition model combobox
         self.recognition_model_CB = QtWidgets.QComboBox(self.sett_panel_page)
         self.recognition_model_CB.setMinimumSize(QtCore.QSize(200, 20))
         self.recognition_model_CB.setObjectName("recognition_model_CB")
-
         self.recognition_model_CB.addItems(['FaceNet512', 'ArcFace'])
-        # self.recognition_model_CB.activated.connect(self.)
-
-
-
+        # horizontal spacer between recognition model label and recognition model combobox
+        spacerItem7 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        # recognition model cell in horizontal layout
+        self.horizontalLayout_3 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_3.setObjectName("horizontalLayout_3")
+        self.horizontalLayout_3.addWidget(self.recognition_model_label)
+        self.horizontalLayout_3.addItem(spacerItem7)
         self.horizontalLayout_3.addWidget(self.recognition_model_CB)
-        self.verticalLayout_3.addLayout(self.horizontalLayout_3)
+
+        # vertical spacer between recognition model cell and processors cell
         spacerItem8 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
-        self.verticalLayout_3.addItem(spacerItem8)
-        self.horizontalLayout_4 = QtWidgets.QHBoxLayout()
-        self.horizontalLayout_4.setObjectName("horizontalLayout_4")
 
-
-
+        # processor label
         self.processors_label = QtWidgets.QLabel(self.sett_panel_page)
         self.processors_label.setMinimumSize(QtCore.QSize(220, 25))
         self.processors_label.setScaledContents(True)
         self.processors_label.setAlignment(QtCore.Qt.AlignCenter)
         self.processors_label.setObjectName("processors_label")
-        self.horizontalLayout_4.addWidget(self.processors_label)
-        spacerItem9 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-        self.horizontalLayout_4.addItem(spacerItem9)
+        # processor combobox 
         self.processors_CB = QtWidgets.QComboBox(self.sett_panel_page)
         self.processors_CB.setMinimumSize(QtCore.QSize(200, 20))
         self.processors_CB.setObjectName("processors_CB")
@@ -324,25 +306,53 @@ class Ui_MainWindow(object):
         for i in range(2, cpu_count+1):
             processors.append(str(i))
         self.processors_CB.addItems(processors)
-        # self.processors_CB.activated.connect(self.)
-
-
-
-
+        # horizontal spacer between processor label and processor combobox
+        spacerItem9 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        # processors cell in horizontal layout
+        self.horizontalLayout_4 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_4.setObjectName("horizontalLayout_4")
+        self.horizontalLayout_4.addWidget(self.processors_label)
+        self.horizontalLayout_4.addItem(spacerItem9)
         self.horizontalLayout_4.addWidget(self.processors_CB)
+
+        # vertical spacer between processors cell and save settings button
+        processorsCellSaveBtnCellSpacer = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        
+        # save settings button
+        self.save_sett_btn = QtWidgets.QPushButton(self.sett_panel_page)
+        self.save_sett_btn.setObjectName("save_sett_btn")
+
+        # detection model cell, recognition model cell, processors cell, 
+        # save settings button and vertical spacers in vertical layout
+        self.verticalLayout_3 = QtWidgets.QVBoxLayout()
+        self.verticalLayout_3.setContentsMargins(50, 50, 50, 50)
+        self.verticalLayout_3.setObjectName("verticalLayout_3")
+        self.verticalLayout_3.addLayout(self.horizontalLayout)
+        self.verticalLayout_3.addItem(spacerItem6)
+        self.verticalLayout_3.addLayout(self.horizontalLayout_3)
+        self.verticalLayout_3.addItem(spacerItem8)
         self.verticalLayout_3.addLayout(self.horizontalLayout_4)
-        self.gridLayout_5.addLayout(self.verticalLayout_3, 2, 1, 1, 2)
-        spacerItem10 = QtWidgets.QSpacerItem(70, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-        self.gridLayout_5.addItem(spacerItem10, 2, 3, 1, 1)
-        spacerItem11 = QtWidgets.QSpacerItem(20, 133, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
-        self.gridLayout_5.addItem(spacerItem11, 3, 2, 1, 1)
+        self.verticalLayout_3.addItem(processorsCellSaveBtnCellSpacer)
+        self.verticalLayout_3.addWidget(self.save_sett_btn)
+
+        # all elements of settings panel in grid layout
+        self.settPanelGL = QtWidgets.QGridLayout(self.sett_panel_page)
+        self.settPanelGL.setObjectName("settPanelGL")
+        self.settPanelGL.addWidget(self.sett_panel_label, 0, 1, 1, 2)
+        self.settPanelGL.addItem(SPTS, 1, 1, 1, 1)
+        self.settPanelGL.addItem(SPLS, 2, 0, 1, 1)
+        self.settPanelGL.addLayout(self.verticalLayout_3, 2, 1, 1, 2)
+        self.settPanelGL.addItem(SPRS, 2, 3, 1, 1)
+        self.settPanelGL.addItem(SPBS, 3, 2, 1, 1)
+        
         self.stackedWidget.addWidget(self.sett_panel_page)
 
 
+        # --------------------settings panel page end--------------------
 
-        # settings panel end
 
 
+        # --------------------add camera page start--------------------
 
         # add camera page
         self.add_camera_page = QtWidgets.QWidget()
@@ -356,6 +366,12 @@ class Ui_MainWindow(object):
         self.gridLayout_6.addWidget(self.label_6, 0, 0, 1, 1)
         self.stackedWidget.addWidget(self.add_camera_page)
 
+        # --------------------add camera page end--------------------
+
+
+
+        # --------------------add filepath page start--------------------
+
         # add filepath page
         self.add_fp_page = QtWidgets.QWidget()
         self.add_fp_page.setObjectName("add_fp_page")
@@ -367,13 +383,15 @@ class Ui_MainWindow(object):
         self.label_7.setObjectName("label_7")
         self.gridLayout_8.addWidget(self.label_7, 0, 0, 1, 1)
         self.stackedWidget.addWidget(self.add_fp_page)
+        
+        # --------------------add filepath page end--------------------
 
-        # stacked widget in content page
+
+
+        # stacked widget in grid layout of content page
         self.gridLayout_7.addWidget(self.stackedWidget, 0, 0, 1, 1)
-
-        # content page in central widget
+        # grid layout of content page in grid layout of central widget
         self.gridLayout.addWidget(self.content_page, 1, 1, 1, 1)
-
         # central widget in mainwindow
         MainWindow.setCentralWidget(self.centralwidget)
 
@@ -397,14 +415,12 @@ class Ui_MainWindow(object):
         self.label_2.setText(_translate("MainWindow", "STREAM"))
         self.label_3.setText(_translate("MainWindow", "ADD DATA"))
         self.label_4.setText(_translate("MainWindow", "RECOGNIZE FACE"))
-
-        # self.label_5.setText(_translate("MainWindow", "SETTINGS PANEL"))
         
         self.sett_panel_label.setText(_translate("MainWindow", "SETTINGS PANEL"))
         self.detection_model_label.setText(_translate("MainWindow", "CHOOSE DETECTION MODEL"))
         self.recognition_model_label.setText(_translate("MainWindow", "CHOOSE RECOGNITION MODEL"))
         self.processors_label.setText(_translate("MainWindow", "CHOOSE PROCESSORS"))
-
+        self.save_sett_btn.setText(_translate("MainWindow", "SAVE"))
 
         self.label_6.setText(_translate("MainWindow", "ADD CAMERA"))
         self.label_7.setText(_translate("MainWindow", "ADD FILEPATH"))
