@@ -1,19 +1,30 @@
 from os import listdir
 import cv2 as cv
-from face_recognition.api import face_encodings
+from mtcnn_cv2 import MTCNN
+from encode_faces import encode_faces_facenet
+from save_load_encoding import load_encoding_json, save_encoding_json
 import json
 import sys
 
 def create_features(file_path):
-    features_to_dump = []
+    mtcnn = MTCNN()
+
+    faces_ls,names = [],[] 
     for file in listdir(file_path):
 
         img = cv.imread(file_path+"/"+file)
-        features = face_encodings(img,num_jitters=6)[0]
-        features_to_dump.append({"name":file.split(".")[0],"features":features.tolist()})
+        img = cv.cvtColor(img,cv.COLOR_BGR2RGB)
+        faces = mtcnn.detect_faces(img)
+        name = file.split(".")[0]
+        for face in faces:
+            x,y,w,h = face["box"]
+            cr_face = img[x:x+w,y:y+h]
+            if cr_face.shape[0]!=0 and cr_face.shape[1]!=0:
+                faces_ls.append(cr_face)
+                names.append(name)
 
-    with open("faces_name_feature.json","w") as fc:
-        json.dump(features_to_dump,fc)
+    features_ls = encode_faces_facenet(faces_ls)
+    save_encoding_json(features_ls,names,"feature_encoding.json")
 
 if __name__ == "__main__":
     file_path = sys.argv[1]

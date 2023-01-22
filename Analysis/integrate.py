@@ -17,7 +17,8 @@ if __name__ == "__main__":
 
         recog_input = {
             "queue":queue,
-            "file_name":"faces_name_feature.json"
+            "clf_file":"facenet_clf.joblib",
+            "name_enc_file":"facenet_enc_out.joblib"
         }
         start_time_main = time()
         detector_process = Process(target=FaceDetect,kwargs=detector_input)
@@ -27,14 +28,12 @@ if __name__ == "__main__":
         recog_process.start()
         detector_process.join()
         recog_process.join()
-
-        
     except KeyboardInterrupt:
-        detector_process.terminate()
-        recog_process.terminate()
-        queue.close()
+        pass
 
     finally:
         print(f"Main total time: {(time()-start_time_main)//60}, Seconds: {(time()-start_time_main)%60}\n")
+        
+        
 
 

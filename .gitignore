@@ -132,4 +132,4 @@ dmypy.json
 #datasets
 lfw_home/
 video/
-
+*face_seen.csv

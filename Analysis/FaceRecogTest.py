@@ -1,5 +1,6 @@
-from face_recognition.api import face_encodings,face_distance
-from joblib import Parallel, delayed
+from encode_faces import encode_faces_facenet
+from joblib import load
+from sklearn.preprocessing import Normalizer
 from time import time
 import numpy as np
 import csv
@@ -10,18 +11,28 @@ class FaceRecognition:
     def __init__(self,*arg,**kwarg):
         self.queue = kwarg["queue"]
 
-        self.faces_file = kwarg["file_name"]
-        self.face_name, self.db_features = self.load_db_faces()
+        self.clf_file = kwarg["clf_file"]
+        self.name_enc_file = kwarg["name_enc_file"]
+
+        self.name_encoded = self.load_name_encoder(self.name_enc_file)
+        self.clf = self.load_classifier(self.clf_file)
+        self.in_encoder = Normalizer(norm="l2")
+        self.seen_file = open("face_seen.csv","a") 
+        self.writer = csv.writer(self.seen_file)
         self.start_recognition()
 
-    def recognize_face(self,feature,min,sec):
-        face_distances = face_distance(self.db_features,feature)
-        face_index = np.argmin(face_distances)
+    def recognize_face(self,features,min,sec):
+        features = self.in_encoder.transform([feature for feature in features])
+        face_indices = self.clf.predict(features)
+        names = self.name_encoded.inverse_transform(face_indices)
+        for name in names:
+            self.writer.writerow([name,min,sec])
+
+    def load_classifier(self,file_name):
+        return load(file_name)
     
-        if face_distances[face_index]<=0.6:
-            with open("face_seen.csv","a") as seen:
-                writer = csv.writer(seen)
-                writer.writerow([self.face_name[face_index],min,sec,face_distances[face_index]])
+    def load_name_encoder(elf,file_name):
+        return load(file_name)
 
     def load_db_faces(self):
         name, features = [],[]
@@ -35,6 +46,10 @@ class FaceRecognition:
 
         return name,np.array(features)
 
+    def face_encodings(self,frame,bboxes):
+        faces = [frame[x:x+w,y:y+h] for x,y,w,h in bboxes]
+        return encode_faces_facenet([face for face in faces if (face.shape[0]!=0 and face.shape[1]!=0)])
+
     def start_recognition(self):
         try:
             start_time_recog = time()
@@ -46,15 +61,24 @@ class FaceRecognition:
                 frame,bboxes,con, (min,sec) = self.queue.get()
 
                 if not con:
+                    
                     self.queue.close()
                     break
 
-                face_features = face_encodings(frame,bboxes,3)
-                Parallel(n_jobs=-1,prefer="threads")(delayed(self.recognize_face)(feature,min,sec) for feature in face_features)
+                faces_features = self.face_encodings(frame,bboxes)
+                if faces_features:
+                    self.recognize_face(faces_features,min,sec)
 
         except KeyboardInterrupt:
             print("recognition stop")
 
         finally:
+            while not self.queue.empty():
+                frame,bboxes,con, (min,sec) = self.queue.get()
+                faces_features = self.face_encodings(frame,bboxes)
+                if faces_features:
+                    self.recognize_face(faces_features,min,sec)
+            self.seen_file.flush()
+            self.seen_file.close()
             print(f"Recognizer total time: {(time()-start_time_recog)//60}, Seconds: {(time()-start_time_recog)%60}\n")
                 
