@@ -35,7 +35,7 @@ class MainWindow(QMainWindow):
     @pyqtSlot(np.ndarray)
     def update_frame(self,frame):
         qt_frame = self.convert_cv_qt(frame)
-        self.ui.label_2.setPixmap(qt_frame)
+        self.ui.home_page_label.setPixmap(qt_frame)
        
     def convert_cv_qt(self,rgb_frame):
         h, w, ch = rgb_frame.shape

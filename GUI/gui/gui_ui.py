@@ -15,30 +15,30 @@ import os
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
+
+        # main window
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(927, 672)
 
-        self.centralwidget = QtWidgets.QWidget(MainWindow)
+        # font settings
         font = QtGui.QFont()
         font.setFamily("Times New Roman")
         font.setPointSize(10)
         font.setBold(True)
         font.setWeight(75)
 
+        # central widget 
+        self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setFont(font)
         self.centralwidget.setObjectName("centralwidget")
 
-        self.gridLayout = QtWidgets.QGridLayout(self.centralwidget)
-        self.gridLayout.setContentsMargins(0, 0, 0, 0)
-        self.gridLayout.setSpacing(0)
-        self.gridLayout.setObjectName("gridLayout")
 
-        # header
+        # --------------------header widget start--------------------
+
+        # header widget
         self.header = QtWidgets.QWidget(self.centralwidget)
         self.header.setObjectName("header")
-        # layout for header
-        self.horizontalLayout_2 = QtWidgets.QHBoxLayout(self.header)
-        self.horizontalLayout_2.setObjectName("horizontalLayout_2")
+
         # menu button
         self.menu_btn = QtWidgets.QPushButton(self.header)
         self.menu_btn.setText("")
@@ -50,37 +50,37 @@ class Ui_MainWindow(object):
         self.menu_btn.setChecked(False)
         self.menu_btn.setAutoExclusive(True)
         self.menu_btn.setObjectName("menu_btn")
-        self.horizontalLayout_2.addWidget(self.menu_btn)
 
-        # header spacer1
+        # vertical spacer between menu button and face recognition label
         spacerItem = QtWidgets.QSpacerItem(369, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-        self.horizontalLayout_2.addItem(spacerItem)
 
         # face recognition label
         self.fr_label = QtWidgets.QLabel(self.header)
         self.fr_label.setScaledContents(True)
         self.fr_label.setAlignment(QtCore.Qt.AlignCenter)
         self.fr_label.setObjectName("fr_label")
-        self.horizontalLayout_2.addWidget(self.fr_label)
 
-        # header spacer2
+        # vertical spacer between face recognition label and end of screen
         spacerItem1 = QtWidgets.QSpacerItem(369, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+
+        # header widget in horizontal layout
+        self.horizontalLayout_2 = QtWidgets.QHBoxLayout(self.header)
+        self.horizontalLayout_2.setObjectName("horizontalLayout_2")
+        self.horizontalLayout_2.addWidget(self.menu_btn)
+        self.horizontalLayout_2.addItem(spacerItem)
+        self.horizontalLayout_2.addWidget(self.fr_label)
         self.horizontalLayout_2.addItem(spacerItem1)
 
-        # header in central widget grid
-        self.gridLayout.addWidget(self.header, 0, 0, 1, 2)
+
+        # --------------------header widget end--------------------
 
 
-        # sidebar
+
+        # --------------------sidebar widget start--------------------
+
+        # sidebar widget
         self.sidebar = QtWidgets.QWidget(self.centralwidget)
         self.sidebar.setObjectName("sidebar")
-
-        # vertical layout for buttons
-        self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.sidebar)
-        self.verticalLayout_2.setObjectName("verticalLayout_2")
-        self.verticalLayout = QtWidgets.QVBoxLayout()
-        self.verticalLayout.setSpacing(0)
-        self.verticalLayout.setObjectName("verticalLayout")
 
         # home button
         self.home_btn = QtWidgets.QPushButton(self.sidebar)
@@ -91,7 +91,6 @@ class Ui_MainWindow(object):
         self.home_btn.setCheckable(True)
         self.home_btn.setAutoExclusive(True)
         self.home_btn.setObjectName("home_btn")
-        self.verticalLayout.addWidget(self.home_btn)
 
         # add data button
         self.add_data_btn = QtWidgets.QPushButton(self.sidebar)
@@ -102,7 +101,6 @@ class Ui_MainWindow(object):
         self.add_data_btn.setCheckable(True)
         self.add_data_btn.setAutoExclusive(True)
         self.add_data_btn.setObjectName("add_data_btn")
-        self.verticalLayout.addWidget(self.add_data_btn)
 
         # recognize face button
         self.recg_face_btn = QtWidgets.QPushButton(self.sidebar)
@@ -113,7 +111,6 @@ class Ui_MainWindow(object):
         self.recg_face_btn.setCheckable(True)
         self.recg_face_btn.setAutoExclusive(True)
         self.recg_face_btn.setObjectName("recg_face_btn")
-        self.verticalLayout.addWidget(self.recg_face_btn)
 
         # settings panel button
         self.sett_panel_btn = QtWidgets.QPushButton(self.sidebar)
@@ -124,7 +121,6 @@ class Ui_MainWindow(object):
         self.sett_panel_btn.setCheckable(True)
         self.sett_panel_btn.setAutoExclusive(True)
         self.sett_panel_btn.setObjectName("sett_panel_btn")
-        self.verticalLayout.addWidget(self.sett_panel_btn)
 
         # add camera button
         self.add_camera_btn = QtWidgets.QPushButton(self.sidebar)
@@ -135,25 +131,30 @@ class Ui_MainWindow(object):
         self.add_camera_btn.setCheckable(True)
         self.add_camera_btn.setAutoExclusive(True)
         self.add_camera_btn.setObjectName("add_camera_btn")
-        self.verticalLayout.addWidget(self.add_camera_btn)
 
-        # add filepath button
-        self.add_fp_btn = QtWidgets.QPushButton(self.sidebar)
+        # test video button
+        self.test_video_btn = QtWidgets.QPushButton(self.sidebar)
         icon6 = QtGui.QIcon()
         icon6.addPixmap(QtGui.QPixmap("icon/add-file-path2.ico"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.add_fp_btn.setIcon(icon6)
-        self.add_fp_btn.setIconSize(QtCore.QSize(20, 20))
-        self.add_fp_btn.setCheckable(True)
-        self.add_fp_btn.setAutoExclusive(True)
-        self.add_fp_btn.setObjectName("add_fp_btn")
-        self.verticalLayout.addWidget(self.add_fp_btn)
+        self.test_video_btn.setIcon(icon6)
+        self.test_video_btn.setIconSize(QtCore.QSize(20, 20))
+        self.test_video_btn.setCheckable(True)
+        self.test_video_btn.setAutoExclusive(True)
+        self.test_video_btn.setObjectName("test_video_btn")
+        
+        # above buttons in vertical layout
+        self.verticalLayout = QtWidgets.QVBoxLayout()
+        self.verticalLayout.setSpacing(0)
+        self.verticalLayout.setObjectName("verticalLayout")
+        self.verticalLayout.addWidget(self.home_btn)
+        self.verticalLayout.addWidget(self.add_data_btn)
+        self.verticalLayout.addWidget(self.recg_face_btn)
+        self.verticalLayout.addWidget(self.sett_panel_btn)
+        self.verticalLayout.addWidget(self.add_camera_btn)
+        self.verticalLayout.addWidget(self.test_video_btn)
 
-        # vertical layout in sidedbar
-        self.verticalLayout_2.addLayout(self.verticalLayout)
-
-        # sidebar spacer1
+        # vertical spacer between vertical layout of buttons and close button
         spacerItem2 = QtWidgets.QSpacerItem(20, 399, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
-        self.verticalLayout_2.addItem(spacerItem2)
 
         # close button
         self.close_btn = QtWidgets.QPushButton(self.sidebar)
@@ -164,22 +165,31 @@ class Ui_MainWindow(object):
         self.close_btn.setCheckable(True)
         self.close_btn.setAutoExclusive(True)
         self.close_btn.setObjectName("close_btn")
+        
+        # set of buttons, vertical spacer and close button in vertical layout
+        self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.sidebar)
+        self.verticalLayout_2.setObjectName("verticalLayout_2")
+        self.verticalLayout_2.addLayout(self.verticalLayout)
+        self.verticalLayout_2.addItem(spacerItem2)
         self.verticalLayout_2.addWidget(self.close_btn)
 
-        # sidebar in central widget grid layout
-        self.gridLayout.addWidget(self.sidebar, 1, 0, 1, 1)
+
+        # --------------------sidebar widget end--------------------
+
+
+
+        # --------------------content page widget start--------------------        
 
         # content page
         self.content_page = QtWidgets.QWidget(self.centralwidget)
         self.content_page.setObjectName("content_page")
 
-        # content page grid layout
-        self.gridLayout_7 = QtWidgets.QGridLayout(self.content_page)
-        self.gridLayout_7.setObjectName("gridLayout_7")
-
         # stacked widget
         self.stackedWidget = QtWidgets.QStackedWidget(self.content_page)
         self.stackedWidget.setObjectName("stackedWidget")
+
+
+        # --------------------home page start--------------------
 
         # home page
         self.home_page = QtWidgets.QWidget()
@@ -187,11 +197,18 @@ class Ui_MainWindow(object):
         self.gridLayout_2 = QtWidgets.QGridLayout(self.home_page)
         self.gridLayout_2.setObjectName("gridLayout_2")
         # home page in label
-        self.label_2 = QtWidgets.QLabel(self.home_page)
-        self.label_2.setAlignment(QtCore.Qt.AlignCenter)
-        self.label_2.setObjectName("label_2")
-        self.gridLayout_2.addWidget(self.label_2, 0, 0, 1, 1)
+        self.home_page_label = QtWidgets.QLabel(self.home_page)
+        self.home_page_label.setAlignment(QtCore.Qt.AlignCenter)
+        self.home_page_label.setObjectName("home_page_label")
+        self.gridLayout_2.addWidget(self.home_page_label, 0, 0, 1, 1)
         self.stackedWidget.addWidget(self.home_page)
+
+
+        # --------------------home page page end--------------------
+
+
+
+        # --------------------add data page start--------------------
 
         # add data page
         self.add_data_page = QtWidgets.QWidget()
@@ -204,6 +221,12 @@ class Ui_MainWindow(object):
         self.label_3.setObjectName("label_3")
         self.gridLayout_3.addWidget(self.label_3, 0, 0, 1, 1)
         self.stackedWidget.addWidget(self.add_data_page)
+
+
+        # --------------------add data page end--------------------
+
+
+        # --------------------recognize face page start--------------------
 
         # recognize face page
         self.recg_face_page = QtWidgets.QWidget()
@@ -386,12 +409,27 @@ class Ui_MainWindow(object):
         
         # --------------------add filepath page end--------------------
 
-
-
-        # stacked widget in grid layout of content page
+        # grid layout of content page
+        self.gridLayout_7 = QtWidgets.QGridLayout(self.content_page)
+        self.gridLayout_7.setObjectName("gridLayout_7")
         self.gridLayout_7.addWidget(self.stackedWidget, 0, 0, 1, 1)
-        # grid layout of content page in grid layout of central widget
+
+
+        # --------------------content page widget end--------------------
+
+
+        # grid layout of central widget
+        self.gridLayout = QtWidgets.QGridLayout(self.centralwidget)
+        self.gridLayout.setContentsMargins(0, 0, 0, 0)
+        self.gridLayout.setSpacing(0)
+        self.gridLayout.setObjectName("gridLayout")
+        # header widget in grid layout of central widget
+        self.gridLayout.addWidget(self.header, 0, 0, 1, 2)
+        # sidebar widget in grid layout of central widget
+        self.gridLayout.addWidget(self.sidebar, 1, 0, 1, 1)
+        # content page widget in grid layour of central widget
         self.gridLayout.addWidget(self.content_page, 1, 1, 1, 1)
+
         # central widget in mainwindow
         MainWindow.setCentralWidget(self.centralwidget)
 
@@ -410,9 +448,9 @@ class Ui_MainWindow(object):
         self.recg_face_btn.setText(_translate("MainWindow", "RECOGNIZE FACE"))
         self.sett_panel_btn.setText(_translate("MainWindow", "SETTINGS PANEL"))
         self.add_camera_btn.setText(_translate("MainWindow", "ADD CAMERA"))
-        self.add_fp_btn.setText(_translate("MainWindow", "ADD FILEPATH"))
+        self.test_video_btn.setText(_translate("MainWindow", "ADD FILEPATH"))
         self.close_btn.setText(_translate("MainWindow", "CLOSE"))
-        self.label_2.setText(_translate("MainWindow", "STREAM"))
+        self.home_page_label.setText(_translate("MainWindow", "STREAM"))
         self.label_3.setText(_translate("MainWindow", "ADD DATA"))
         self.label_4.setText(_translate("MainWindow", "RECOGNIZE FACE"))
         
