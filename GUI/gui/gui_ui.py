@@ -448,7 +448,7 @@ class Ui_MainWindow(object):
         self.recg_face_btn.setText(_translate("MainWindow", "RECOGNIZE FACE"))
         self.sett_panel_btn.setText(_translate("MainWindow", "SETTINGS PANEL"))
         self.add_camera_btn.setText(_translate("MainWindow", "ADD CAMERA"))
-        self.test_video_btn.setText(_translate("MainWindow", "ADD FILEPATH"))
+        self.test_video_btn.setText(_translate("MainWindow", "TEST VIDEO"))
         self.close_btn.setText(_translate("MainWindow", "CLOSE"))
         self.home_page_label.setText(_translate("MainWindow", "STREAM"))
         self.label_3.setText(_translate("MainWindow", "ADD DATA"))
@@ -461,7 +461,7 @@ class Ui_MainWindow(object):
         self.save_sett_btn.setText(_translate("MainWindow", "SAVE"))
 
         self.label_6.setText(_translate("MainWindow", "ADD CAMERA"))
-        self.label_7.setText(_translate("MainWindow", "ADD FILEPATH"))
+        self.label_7.setText(_translate("MainWindow", "TEST VIDEO"))
 
     # def foo(self):
 
