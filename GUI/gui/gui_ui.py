@@ -408,6 +408,7 @@ class Ui_MainWindow(object):
         self.stackedWidget.addWidget(self.add_fp_page)
         
         # --------------------add filepath page end--------------------
+        # --------------------add filepath page end--------------------
 
         # grid layout of content page
         self.gridLayout_7 = QtWidgets.QGridLayout(self.content_page)
