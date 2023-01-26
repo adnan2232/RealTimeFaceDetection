@@ -6,6 +6,9 @@
     background-color: #364694;
     border-bottom: 3px solid rgb(0, 0, 0);
 }
+
+/* sidebar widget css start */
+
 #sidebar {
     background-color: #313a46;
 }
@@ -25,3 +28,5 @@
 #sidebar QPushButton:checked {
     color: #fff;
 }
+
+/* sidebar widget css end */
