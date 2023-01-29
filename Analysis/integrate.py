@@ -11,7 +11,7 @@ if __name__ == "__main__":
         detector_input = {
             "username":"aa2232786",
             "password": "aa2232786",
-            "IP":"192.168.1.106",
+            "IP":"192.168.1.107",
             "queue":queue
         }
 
