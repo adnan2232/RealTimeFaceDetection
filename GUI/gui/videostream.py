@@ -28,7 +28,7 @@ class VideoStream(QThread):
             frame, 
             (x,y),
             (x+width,y+height),
-            color = (255,0,0),
+            color = (255,255,0),
             thickness=1
         )
     

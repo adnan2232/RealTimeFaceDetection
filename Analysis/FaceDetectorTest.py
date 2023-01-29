@@ -19,8 +19,10 @@ class FaceDetect:
         x,y = int(img_col*rrb.xmin),int(img_row*rrb.ymin)
         width,height = int(img_col*rrb.width),int(img_row*rrb.height)
 
-        
-        return [(x,y),(x+width,y+height)]
+        landmarks = face.location_data.relative_keypoints
+        right_eye = (int(landmarks[0].x * img_col), int(landmarks[0].y * img_row))
+        left_eye = (int(landmarks[1].x * img_col), int(landmarks[1].y * img_row))
+        return [(x,y),(x+width,y+height),(left_eye,right_eye)]
 
 
     def start_detection(self):
@@ -58,7 +60,7 @@ class FaceDetect:
 
                 bboxes = []
                 for face in faces:
-                    (x,y),(w,h) = self.get_bbox(face,img_row,img_col)
+                    (x,y),(w,h),(left_eye,right_eye) = self.get_bbox(face,img_row,img_col)
                     cv.rectangle(
                         frame, 
                         (x,y),
@@ -66,7 +68,7 @@ class FaceDetect:
                         color = (255,0,0),
                         thickness=1
                     )
-                    bboxes.append([x,y,w,h])
+                    bboxes.append([x,y,w,h,left_eye,right_eye])
 
                 if frame_no%5==0:
                     self.queue.put([frame,bboxes,True,(min,sec)])

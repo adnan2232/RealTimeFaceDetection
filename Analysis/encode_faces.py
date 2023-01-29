@@ -1,19 +1,20 @@
 import numpy as np
 import cv2 as cv
+import traceback
 from deepface import DeepFace
-
+from deepface.detectors.FaceDetector import alignment_procedure
 
 def encode_faces_facenet(faces):
 
     encodings = []
     for i in range(len(faces)):
         try:
-            faces[i] = faces[i].astype(np.float32)
-            print(faces[i].shape)
+            face, left_eye,right_eye = faces[i][0],faces[i][1], faces[i][2]
             encodings.append(
                 DeepFace.represent(
-                    faces[i],
+                    alignment_procedure(face,left_eye,right_eye),
                     model_name="Facenet",
+                    detector_backend="skip",
                     enforce_detection=False
                 )
             )
