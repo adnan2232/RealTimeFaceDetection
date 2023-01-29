@@ -196,11 +196,23 @@ class Ui_MainWindow(object):
         self.home_page.setObjectName("home_page")
         self.gridLayout_2 = QtWidgets.QGridLayout(self.home_page)
         self.gridLayout_2.setObjectName("gridLayout_2")
+        # 4 spacers
+        # HP = home panel, T = top, L = left, R = right, B = bottom, S = spacer
+        HPLS = QtWidgets.QSpacerItem(20, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        HPTS = QtWidgets.QSpacerItem(20, 20, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        HPRS = QtWidgets.QSpacerItem(20, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        HPBS = QtWidgets.QSpacerItem(20, 20, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         # home page in label
         self.home_page_label = QtWidgets.QLabel(self.home_page)
         self.home_page_label.setAlignment(QtCore.Qt.AlignCenter)
         self.home_page_label.setObjectName("home_page_label")
-        self.gridLayout_2.addWidget(self.home_page_label, 0, 0, 1, 1)
+        
+        self.gridLayout_2.addItem(HPTS, 0, 1, 1, 1)
+        self.gridLayout_2.addItem(HPLS, 1, 0, 1, 1)
+        self.gridLayout_2.addWidget(self.home_page_label, 1, 1, 1, 2)
+        self.gridLayout_2.addItem(HPRS, 1, 3, 1, 1)
+        self.gridLayout_2.addItem(HPBS, 2, 2, 1, 1)
+        # self.gridLayout_2.addWidget(self.home_page_label, 0, 0, 1, 1)
         self.stackedWidget.addWidget(self.home_page)
 
 
@@ -408,6 +420,7 @@ class Ui_MainWindow(object):
         self.stackedWidget.addWidget(self.add_fp_page)
         
         # --------------------add filepath page end--------------------
+        # --------------------add filepath page end--------------------
 
         # grid layout of content page
         self.gridLayout_7 = QtWidgets.QGridLayout(self.content_page)
@@ -448,7 +461,7 @@ class Ui_MainWindow(object):
         self.recg_face_btn.setText(_translate("MainWindow", "RECOGNIZE FACE"))
         self.sett_panel_btn.setText(_translate("MainWindow", "SETTINGS PANEL"))
         self.add_camera_btn.setText(_translate("MainWindow", "ADD CAMERA"))
-        self.test_video_btn.setText(_translate("MainWindow", "ADD FILEPATH"))
+        self.test_video_btn.setText(_translate("MainWindow", "TEST VIDEO"))
         self.close_btn.setText(_translate("MainWindow", "CLOSE"))
         self.home_page_label.setText(_translate("MainWindow", "STREAM"))
         self.label_3.setText(_translate("MainWindow", "ADD DATA"))
@@ -461,7 +474,7 @@ class Ui_MainWindow(object):
         self.save_sett_btn.setText(_translate("MainWindow", "SAVE"))
 
         self.label_6.setText(_translate("MainWindow", "ADD CAMERA"))
-        self.label_7.setText(_translate("MainWindow", "ADD FILEPATH"))
+        self.label_7.setText(_translate("MainWindow", "TEST VIDEO"))
 
     # def foo(self):
 
