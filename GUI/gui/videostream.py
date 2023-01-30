@@ -28,13 +28,13 @@ class VideoStream(QThread):
             frame, 
             (x,y),
             (x+width,y+height),
-            color = (255,0,0),
-            thickness=1
+            color = (0,255,0),
+            thickness=2
         )
     
     def draw_bbox_mtcnn(self,frame,face):
         x,y,w,h = face['box']
-        cv.rectangle(frame,(x,y),(x+w,y+h),color=(0,255,0),thickness=1)
+        cv.rectangle(frame,(x,y),(x+w,y+h),color=(0,255,0),thickness=2)
 
     def draw_bbox(self,frame,face,img_row,img_col):
         if self.face_detector_model == "mediapipe":
