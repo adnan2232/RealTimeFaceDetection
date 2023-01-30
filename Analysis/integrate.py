@@ -11,15 +11,18 @@ if __name__ == "__main__":
         detector_input = {
             "username":"aa2232786",
             "password": "aa2232786",
-            "IP":"192.168.1.106",
+            "IP":"192.168.1.107",
             "queue":queue
         }
 
         recog_input = {
             "queue":queue,
             "clf_file":"facenet_clf.joblib",
-            "name_enc_file":"facenet_enc_out.joblib"
+            "name_enc_file":"facenet_enc_out.joblib",
+            "encoding_path":"feature_encoding.json",
+            "classifier":"l2"
         }
+        
         start_time_main = time()
         detector_process = Process(target=FaceDetect,kwargs=detector_input)
         recog_process = Process(target=FaceRecognition,kwargs=recog_input)
