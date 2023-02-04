@@ -5,7 +5,7 @@ from sklearn.preprocessing import Normalizer
 from time import time
 import numpy as np
 import csv
-
+import cv2 as cv
 
 class FaceRecognition:
 
@@ -29,6 +29,8 @@ class FaceRecognition:
 
         if self.classifier == "svm":
             self.load_svm(kwarg["clf_file"],kwarg["name_enc_file"])
+        elif self.classifier == "knn":
+            self.knn = self.load_knn(kwarg["clf_file"],kwarg["name_enc_file"])
         else:
             self.names, self.features = self.load_encoding(kwarg["encoding_path"])
             print(self.names)
@@ -39,23 +41,13 @@ class FaceRecognition:
         self.writer = csv.writer(self.seen_file)
         self.start_recognition()
 
-    def load_encoding(self,encoding_path):
-        return load_encoding_json(encoding_path)
-
-    def load_svm(self,clf_path,name_enc_path):
-        self.clf_file = clf_path
-        self.name_enc_file = name_enc_path
-        self.name_encoded = self.load_name_encoder(self.name_enc_file)
-        self.clf = self.load_classifier(self.clf_file)
-        
-    
     def recognize_face(self,features,min,sec):
         if self.classifier =="svm":
             self.recognize_face_svm(features,min,sec)
         elif self.classifier == "l2":
             self.recognize_face_l2(features,min,sec)
         else:
-            self.recognize_face_cosine(features,min,sec)
+            self.recognize_face_knn(features,min,sec)
 
     def recognize_face_svm(self,features,min,sec):
         features = self.in_encoder.transform([feature for feature in features])
@@ -63,6 +55,14 @@ class FaceRecognition:
         names = self.name_encoded.inverse_transform(face_indices)
         for name in names:
             self.writer.writerow([name,min,sec])
+
+    def recognize_face_knn(self,features,min,sec):
+
+        faces = self.clf.predict(features)
+        names = self.name_encoded.inverse_transform(faces)
+            
+        self.writer.writerows(zip(names,[min]*len(names),[sec]*len(names)))
+
 
     def recognize_face_l2(self,features,minu,sec):
     
@@ -77,15 +77,29 @@ class FaceRecognition:
             name, threshold  = "unknown", FaceRecognition.thresholds["Facenet"]["euclidean"]
    
             for face_name, l2 in faces.items():
-                mean = min(l2)
+                mean = np.min(l2)
                 if mean <= threshold:
                     threshold = mean
                     name = face_name
             del faces
             self.writer.writerow([name,minu,sec,threshold])
 
+
     def euclidean_distance(self,feature1, feature2):
         return np.linalg.norm(feature1-feature2)
+
+    def load_encoding(self,encoding_path):
+        return load_encoding_json(encoding_path)
+
+    def load_svm(self,clf_path,name_enc_path):
+        self.clf_file = clf_path
+        self.name_enc_file = name_enc_path
+        self.name_encoded = self.load_name_encoder(self.name_enc_file)
+        self.clf = self.load_classifier(self.clf_file)
+        
+    def load_knn(self,clf_path,name_enc_path):
+        self.name_encoded = self.load_name_encoder(name_enc_path)
+        self.clf = self.load_classifier(clf_path)
 
     def load_classifier(self,file_name):
         return load(file_name)
@@ -94,7 +108,7 @@ class FaceRecognition:
         return load(file_name)
 
     def face_encodings(self,frame,bboxes):
-        faces = [(frame[x:x+w,y:y+h],left_eye,right_eye) for x,y,w,h,left_eye,right_eye in bboxes]
+        faces = [(frame[y:h,x:w],left_eye,right_eye) for x,y,w,h,left_eye,right_eye in bboxes]
         return encode_faces_facenet([face for face in faces if (face[0].shape[0]!=0 and face[0].shape[1]!=0)])
 
     def start_recognition(self):
