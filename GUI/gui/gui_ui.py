@@ -141,6 +141,16 @@ class Ui_MainWindow(object):
         self.test_video_btn.setCheckable(True)
         self.test_video_btn.setAutoExclusive(True)
         self.test_video_btn.setObjectName("test_video_btn")
+
+        # upload faces button
+        self.upload_faces_btn = QtWidgets.QPushButton(self.sidebar)
+        icon6 = QtGui.QIcon()
+        icon6.addPixmap(QtGui.QPixmap("icon/add-file-path2.ico"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.upload_faces_btn.setIcon(icon6)
+        self.upload_faces_btn.setIconSize(QtCore.QSize(20, 20))
+        self.upload_faces_btn.setCheckable(True)
+        self.upload_faces_btn.setAutoExclusive(True)
+        self.upload_faces_btn.setObjectName("upload_faces_btn")
         
         # above buttons in vertical layout
         self.verticalLayout = QtWidgets.QVBoxLayout()
@@ -152,6 +162,7 @@ class Ui_MainWindow(object):
         self.verticalLayout.addWidget(self.sett_panel_btn)
         self.verticalLayout.addWidget(self.add_camera_btn)
         self.verticalLayout.addWidget(self.test_video_btn)
+        self.verticalLayout.addWidget(self.upload_faces_btn)
 
         # vertical spacer between vertical layout of buttons and close button
         spacerItem2 = QtWidgets.QSpacerItem(20, 399, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
@@ -420,7 +431,30 @@ class Ui_MainWindow(object):
         self.stackedWidget.addWidget(self.add_fp_page)
         
         # --------------------add filepath page end--------------------
-        # --------------------add filepath page end--------------------
+
+
+
+        # --------------------upload faces page start--------------------
+
+        # upload faces page
+        self.upload_faces_page = QtWidgets.QWidget()
+        self.upload_faces_page.setObjectName("upload_faces_page")
+        self.gridLayout_9 = QtWidgets.QGridLayout(self.upload_faces_page)
+        self.gridLayout_9.setObjectName("gridLayout_9")
+        # upload faces label
+        self.label_8 = QtWidgets.QLabel(self.upload_faces_page)
+        self.label_8.setAlignment(QtCore.Qt.AlignCenter)
+        self.label_8.setObjectName("label_8")
+        # upload faces page button
+        # def upload_faces(self):
+        #     diag = QtGui.QFileDialog()
+        #     fname = diag.getOpenFileName(None, )
+        # self.upload_faces_page_btn = QtWidgets.QPushButton(self.upload_faces_page)
+        # self.upload_faces_page_btn.clicked.connect(self.upload_faces)
+        self.gridLayout_9.addWidget(self.label_8, 0, 0, 1, 1)
+        self.stackedWidget.addWidget(self.upload_faces_page)
+        
+        # --------------------upload faces page end--------------------
 
         # grid layout of content page
         self.gridLayout_7 = QtWidgets.QGridLayout(self.content_page)
@@ -456,16 +490,22 @@ class Ui_MainWindow(object):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.fr_label.setText(_translate("MainWindow", "FACE RECOGNIZER"))
+
         self.home_btn.setText(_translate("MainWindow", "HOME"))
         self.add_data_btn.setText(_translate("MainWindow", "ADD DATA"))
         self.recg_face_btn.setText(_translate("MainWindow", "RECOGNIZE FACE"))
         self.sett_panel_btn.setText(_translate("MainWindow", "SETTINGS PANEL"))
         self.add_camera_btn.setText(_translate("MainWindow", "ADD CAMERA"))
         self.test_video_btn.setText(_translate("MainWindow", "TEST VIDEO"))
+        self.upload_faces_btn.setText(_translate("MainWindow", "UPLOAD FACES"))
         self.close_btn.setText(_translate("MainWindow", "CLOSE"))
+
         self.home_page_label.setText(_translate("MainWindow", "STREAM"))
         self.label_3.setText(_translate("MainWindow", "ADD DATA"))
         self.label_4.setText(_translate("MainWindow", "RECOGNIZE FACE"))
+        self.label_6.setText(_translate("MainWindow", "ADD CAMERA"))
+        self.label_7.setText(_translate("MainWindow", "TEST VIDEO"))
+        self.label_8.setText(_translate("MainWindow", "UPLOAD FACES"))
         
         self.sett_panel_label.setText(_translate("MainWindow", "SETTINGS PANEL"))
         self.detection_model_label.setText(_translate("MainWindow", "CHOOSE DETECTION MODEL"))
@@ -473,8 +513,6 @@ class Ui_MainWindow(object):
         self.processors_label.setText(_translate("MainWindow", "CHOOSE PROCESSORS"))
         self.save_sett_btn.setText(_translate("MainWindow", "SAVE"))
 
-        self.label_6.setText(_translate("MainWindow", "ADD CAMERA"))
-        self.label_7.setText(_translate("MainWindow", "TEST VIDEO"))
 
     # def foo(self):
 
