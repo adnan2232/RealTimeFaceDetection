@@ -22,19 +22,6 @@ class VideoStream(QThread):
         rrb = face.location_data.relative_bounding_box
         x,y = int(img_col*rrb.xmin),int(img_row*rrb.ymin)
         width,height = int(img_col*rrb.width),int(img_row*rrb.height)
-<<<<<<< HEAD
-        cv.rectangle(
-            frame, 
-            (x,y),
-            (x+width,y+height),
-            color = (0,255,0),
-            thickness=2
-        )
-    
-    def draw_bbox_mtcnn(self,frame,face):
-        x,y,w,h = face['box']
-        cv.rectangle(frame,(x,y),(x+w,y+h),color=(0,255,0),thickness=2)
-=======
 
         landmarks = face.location_data.relative_keypoints
         right_eye = (int(landmarks[0].x * img_col), int(landmarks[0].y * img_row))
@@ -45,7 +32,6 @@ class VideoStream(QThread):
         x,y,width,height = face['box']
         left_eye, right_eye = face["keypoints"]["left_eye"], face["keypoints"]["right_eye"]
         return [(x,y),(x+width,y+height),(left_eye,right_eye)]
->>>>>>> 162aafd192e430a707f0d66f692dc5ac0e9c0105
 
     def get_bbox(self,face,img_row,img_col):
         if self.face_detector_model == "mediapipe":
@@ -69,8 +55,11 @@ class VideoStream(QThread):
 
     def run(self):
         self.face_detector = self.FaceDetection()
-        self.capture = cv.VideoCapture(f"rtsp://{self.username}:{self.password}@{self.IP}:554/stream1")
-        fps = self.capture.get(cv.CAP_PROP_FPS)
+        #self.capture = cv.VideoCapture(f"rtsp://{self.username}:{self.password}@{self.IP}:554/stream1")
+        self.capture = cv.VideoCapture(0)
+        #fps = self.capture.get(cv.CAP_PROP_FPS)
+        fps = 30
+        print(fps)
         frame_no = 0
         faces = None
         while(True):
@@ -85,7 +74,7 @@ class VideoStream(QThread):
             img_row, img_col = frame.shape[0],frame.shape[1]
             frame = cv.cvtColor(frame,cv.COLOR_BGR2RGB)
 
-            if frame_no%5 == 0:
+            if frame_no%5 == 0 or self.face_detector_model == "mediapipe":
                 faces = self.capture_faces(frame) 
             
             if not faces:

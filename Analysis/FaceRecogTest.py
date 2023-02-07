@@ -120,12 +120,19 @@ class FaceRecognition:
             print("recognition stop")
 
         finally:
-            while not self.queue.empty():
-                frame,bboxes,con, (min,sec) = self.queue.get()
-                faces_features = self.face_encodings(frame,bboxes)
-                if faces_features:
-                    self.recognize_face(faces_features,min,sec)
-            self.seen_file.flush()
-            self.seen_file.close()
-            print(f"Recognizer total time: {(time()-start_time_recog)//60}, Seconds: {(time()-start_time_recog)%60}\n")
+            try:
+                while not self.queue.empty():
+                    
+                    frame,bboxes,con, (min,sec) = self.queue.get()
+                    if not con:
+                        break
+                    faces_features = self.face_encodings(frame,bboxes)
+                    if faces_features:
+                        self.recognize_face(faces_features,min,sec)
+            except Exception:
+                pass
+            finally:
+                self.seen_file.flush()
+                self.seen_file.close()
+                print(f"Recognizer total time: {(time()-start_time_recog)//60}, Seconds: {(time()-start_time_recog)%60}\n")
                 

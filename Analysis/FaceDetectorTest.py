@@ -81,7 +81,7 @@ class FaceDetect:
             print("Detector End")
 
         finally:
-            self.queue.put([frame,bboxes,False,(min,sec)])
+            self.queue.put([frame,[],False,(min,sec)])
             print(f"Detector total time: Minutes: {(time()-start_time_detect)//60}, Seconds: {(time()-start_time_detect)%60}\n")
             capture.release()
             cv.destroyAllWindows()

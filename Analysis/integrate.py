@@ -20,7 +20,7 @@ if __name__ == "__main__":
             "clf_file":"facenet_clf.joblib",
             "name_enc_file":"facenet_enc_out.joblib",
             "encoding_path":"feature_encoding.json",
-            "classifier":"l2"
+            "classifier":"svm"
         }
         
         start_time_main = time()
