@@ -7,6 +7,7 @@ import cv2 as cv
 from gui_ui import Ui_MainWindow
 from multiprocessing import Queue
 from videostream import VideoStream
+from facerecognizer import FaceRecognition
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -21,17 +22,22 @@ class MainWindow(QMainWindow):
 
         self.ui.save_sett_btn.clicked.connect(self.save_settings)
 
-        self.MPQueue = Queue()
+        self.MPQueue = Queue(max_size=1000)
         self.video_thread =VideoStream(
-            self.MPQueue,
+            MPQueue = self.MPQueue,
             username="aa2232786",
             password="aa2232786",
-            IP="192.168.0.173",
-            detection_model = "mtcnn"
+            IP="192.168.1.105",
+            detection_model = self.get_detection_model()
         )        
         self.video_thread.stream_signal.connect(self.update_frame)
         self.video_thread.start()
-    
+
+        self.recog_thread = FaceRecognition(
+            MPQueue = self.MPQueue,
+        )
+
+
     @pyqtSlot(np.ndarray)
     def update_frame(self,frame):
         qt_frame = self.convert_cv_qt(frame)
@@ -73,6 +79,8 @@ class MainWindow(QMainWindow):
         self.ui.stackedWidget.setCurrentIndex(4)
     def on_test_video_btn_toggled(self):
         self.ui.stackedWidget.setCurrentIndex(5)
+    def on_upload_faces_btn_toggled(self):
+        self.ui.stackedWidget.setCurrentIndex(6)
     # -------------------------
     
 

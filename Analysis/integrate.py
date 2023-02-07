@@ -11,16 +11,16 @@ if __name__ == "__main__":
         detector_input = {
             "username":"aa2232786",
             "password": "aa2232786",
-            "IP":"192.168.1.107",
+            "IP":"192.168.1.105",
             "queue":queue
         }
-
+        classifier = "knn"
         recog_input = {
             "queue":queue,
-            "clf_file":"facenet_clf.joblib",
-            "name_enc_file":"facenet_enc_out.joblib",
+            "clf_file":f"facenet_{classifier}_clf.joblib",
+            "name_enc_file":f"facenet_{classifier}_enc_out.joblib",
             "encoding_path":"feature_encoding.json",
-            "classifier":"svm"
+            "classifier":classifier
         }
         
         start_time_main = time()

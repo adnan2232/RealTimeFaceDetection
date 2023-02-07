@@ -70,8 +70,8 @@ class FaceDetect:
                     )
                     bboxes.append([x,y,w,h,left_eye,right_eye])
 
-                if frame_no%5==0:
-                    self.queue.put([frame,bboxes,True,(min,sec)])
+                if frame_no%6==0:
+                    self.queue.put([cv.cvtColor(frame,cv.COLOR_BGR2RGB),bboxes,True,(min,sec)])
 
                 cv.imshow("Medaipipe",frame)
                 if cv.waitKey(20)&0xFF == ord("d"):
