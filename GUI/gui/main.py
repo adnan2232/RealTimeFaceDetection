@@ -79,6 +79,8 @@ class MainWindow(QMainWindow):
         self.ui.stackedWidget.setCurrentIndex(4)
     def on_test_video_btn_toggled(self):
         self.ui.stackedWidget.setCurrentIndex(5)
+    def on_upload_faces_btn_toggled(self):
+        self.ui.stackedWidget.setCurrentIndex(6)
     # -------------------------
     
 
