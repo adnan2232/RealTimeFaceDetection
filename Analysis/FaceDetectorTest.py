@@ -28,7 +28,8 @@ class FaceDetect:
     def start_detection(self):
 
         face_detector = mp.solutions.face_detection.FaceDetection(
-            model_selection = 1
+            model_selection = 1,
+            min_detection_confidence=0.9
         )
         drawer = mp.solutions.drawing_utils
 
@@ -68,11 +69,12 @@ class FaceDetect:
                         color = (255,0,0),
                         thickness=1
                     )
+ 
                     bboxes.append([x,y,w,h,left_eye,right_eye])
 
                 if frame_no%6==0:
                     self.queue.put([cv.cvtColor(frame,cv.COLOR_BGR2RGB),bboxes,True,(min,sec)])
-
+                
                 cv.imshow("Medaipipe",frame)
                 if cv.waitKey(20)&0xFF == ord("d"):
                     break

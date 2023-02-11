@@ -52,12 +52,12 @@ def create_features(file_path):
     for folder in listdir(file_path):
         name = folder.lower()
         cropped_folder = file_path+"/"+"cropped_folder"+"_"+name
-        try:
+        '''try:
             rmtree(cropped_folder)
             rmdir(cropped_folder)
         except:
             pass
-        mkdir(cropped_folder)
+        mkdir(cropped_folder)'''
         for file in listdir(file_path+"/"+folder):
             img = cv.imread(file_path+"/"+folder+"/"+file)
             img = cv.cvtColor(img,cv.COLOR_BGR2RGB)
@@ -71,7 +71,7 @@ def create_features(file_path):
                 if cr_face.shape[0]!=0 and cr_face.shape[1]!=0:
                     faces_ls.append((cr_face,left_eye,right_eye))
                     names.append(name)
-                    cv.imwrite(cropped_folder+"/"+file,cr_face)
+                    #cv.imwrite(cropped_folder+"/"+file,cr_face)
 
     features_ls = encode_faces_facenet(faces_ls)
     save_encoding_json(features_ls,names,"feature_encoding.json")

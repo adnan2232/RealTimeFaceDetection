@@ -37,7 +37,7 @@ class FaceRecognition:
             self.total_faces = len(self.names)
         
         self.in_encoder = Normalizer(norm="l2")
-        self.seen_file = open("face_seen.csv","a") 
+        self.seen_file = open("face_seen_fn512_l2.csv","a") 
         self.writer = csv.writer(self.seen_file)
         self.start_recognition()
 
@@ -74,7 +74,7 @@ class FaceRecognition:
                 else:
                     faces[self.names[i]] = [self.euclidean_distance(self.features[i],feature)]
 
-            name, threshold  = "unknown", FaceRecognition.thresholds["Facenet"]["euclidean"]
+            name, threshold  = "unknown", FaceRecognition.thresholds["Facenet512"]["euclidean"]
    
             for face_name, l2 in faces.items():
                 mean = np.min(l2)
@@ -82,7 +82,7 @@ class FaceRecognition:
                     threshold = mean
                     name = face_name
             del faces
-            self.writer.writerow([name,minu,sec,threshold])
+            self.writer.writerow([name,minu,sec])
 
 
     def euclidean_distance(self,feature1, feature2):
