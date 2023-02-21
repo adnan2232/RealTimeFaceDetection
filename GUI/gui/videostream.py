@@ -14,7 +14,7 @@ class VideoStream(QThread):
         self.IP = kwargs["IP"]
         self.username = kwargs["username"]
         self.password = kwargs["password"]
-        self.MPqueue = kwargs["MPqueue"]
+        self.MPqueue = kwargs["MPQueue"]
         self._run_flag = True
     
 

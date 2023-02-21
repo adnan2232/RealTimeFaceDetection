@@ -5,7 +5,7 @@ import traceback
 from deepface import DeepFace
 from deepface.detectors.FaceDetector import alignment_procedure
 
-def encode_faces_facenet(faces,model_name="Facenet"):
+def encode_faces_facenet(faces,model_name="Facenet512"):
 
     encodings = []
     for i in range(len(faces)):

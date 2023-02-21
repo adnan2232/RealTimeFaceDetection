@@ -7,7 +7,7 @@ import cv2 as cv
 from gui_ui import Ui_MainWindow
 from multiprocessing import Queue
 from videostream import VideoStream
-from facerecognizer import FaceRecognition
+#rom facerecognizer import FaceRecognition
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -22,7 +22,7 @@ class MainWindow(QMainWindow):
 
         self.ui.save_sett_btn.clicked.connect(self.save_settings)
 
-        self.MPQueue = Queue(max_size=1000)
+        self.MPQueue = Queue(maxsize=1000)
         self.video_thread =VideoStream(
             MPQueue = self.MPQueue,
             username="aa2232786",
@@ -33,9 +33,9 @@ class MainWindow(QMainWindow):
         self.video_thread.stream_signal.connect(self.update_frame)
         self.video_thread.start()
 
-        self.recog_thread = FaceRecognition(
+        '''self.recog_thread = FaceRecognition(
             MPQueue = self.MPQueue,
-        )
+        )'''
 
 
     @pyqtSlot(np.ndarray)
