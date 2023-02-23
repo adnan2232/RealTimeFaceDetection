@@ -59,7 +59,11 @@ class VideoStream(QThread):
                     color = (0,255,0),
                     thickness=2
                 )
-                bboxes.append([x,y,w,h,left_eye,right_eye])
+                bboxes.append({
+                    "x":x,"y":y,
+                    "w":w,"h":h,
+                    "left_eye":left_eye,"right_eye":right_eye
+                })
 
             self.stream_signal.emit(frame)
             """if frame_no%5==0:

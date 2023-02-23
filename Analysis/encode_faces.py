@@ -16,7 +16,7 @@ def encode_faces_facenet(faces,model_name="Facenet512"):
     
         encodings.append(
             DeepFace.represent(
-                face,
+                aligned_face,
                 model_name=model_name,
                 detector_backend="skip",
                 enforce_detection=False
