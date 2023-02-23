@@ -1,6 +1,5 @@
-from joblib import Parallel,delayed
-from fd_mediaipipe import MediaPipeWrapper
-from fd_mtcnn import MTCNNWrapper
+from FaceDetector.fd_mediaipipe import MediaPipeWrapper
+from FaceDetector.fd_mtcnn import MTCNNWrapper
 import numpy as np
 import cv2 as cv
 from PyQt5.QtCore import  QThread, pyqtSignal

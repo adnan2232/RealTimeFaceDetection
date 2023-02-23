@@ -73,7 +73,7 @@ class FaceDetect:
                     bboxes.append([x,y,w,h,left_eye,right_eye])
 
                 if frame_no%6==0:
-                    self.queue.put([cv.cvtColor(frame,cv.COLOR_BGR2RGB),bboxes,True,(min,sec)])
+                    self.queue.put([cv.cvtColor(frame.copy(),cv.COLOR_BGR2RGB),bboxes,True,(min,sec)])
                 
                 cv.imshow("Medaipipe",frame)
                 if cv.waitKey(20)&0xFF == ord("d"):
@@ -83,7 +83,7 @@ class FaceDetect:
             print("Detector End")
 
         finally:
-            self.queue.put([frame,bboxes,False,(min,sec)])
+            self.queue.put([frame.copy(),bboxes,False,(min,sec)])
             print(f"Detector total time: Minutes: {(time()-start_time_detect)//60}, Seconds: {(time()-start_time_detect)%60}\n")
             capture.release()
             cv.destroyAllWindows()

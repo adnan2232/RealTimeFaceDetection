@@ -81,11 +81,13 @@ class FaceRecognition:
                 if mean <= threshold:
                     threshold = mean
                     name = face_name
-            del faces
+            
             self.writer.writerow([name,minu,sec])
+ 
 
 
     def euclidean_distance(self,feature1, feature2):
+     
         return np.linalg.norm(feature1-feature2)
 
     def load_encoding(self,encoding_path):
@@ -109,7 +111,7 @@ class FaceRecognition:
 
     def face_encodings(self,frame,bboxes):
         faces = [(frame[y:h,x:w],left_eye,right_eye) for x,y,w,h,left_eye,right_eye in bboxes]
-        return encode_faces_facenet([face for face in faces if (face[0].shape[0]!=0 and face[0].shape[1]!=0)])
+        return encode_faces_facenet([face for face in faces if (len(face[0].shape)>2 and face[0].shape[0]!=0 and face[0].shape[1]!=0)])
 
     def start_recognition(self):
         try:
@@ -120,13 +122,14 @@ class FaceRecognition:
                     continue
                     
                 frame,bboxes,con, (min,sec) = self.queue.get()
-
+                
                 if not con:
                     
                     self.queue.close()
                     break
 
                 faces_features = self.face_encodings(frame,bboxes)
+           
                 if faces_features:
                     self.recognize_face(faces_features,min,sec)
 

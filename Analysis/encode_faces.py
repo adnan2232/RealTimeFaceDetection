@@ -9,18 +9,18 @@ def encode_faces_facenet(faces,model_name="Facenet512"):
 
     encodings = []
     for i in range(len(faces)):
-        try:
-            face, left_eye,right_eye = faces[i][0],faces[i][1], faces[i][2]
-            encodings.append(
-                DeepFace.represent(
-                    alignment_procedure(face,left_eye,right_eye),
-                    model_name=model_name,
-                    detector_backend="skip",
-                    enforce_detection=False
-                )
-            )
-            
-        except:
-            pass
+    
+        face, left_eye,right_eye = faces[i][0],faces[i][1], faces[i][2]
+        aligned_face = alignment_procedure(face,left_eye,right_eye)
+
+    
+        encodings.append(
+            DeepFace.represent(
+                face,
+                model_name=model_name,
+                detector_backend="skip",
+                enforce_detection=False
+            )[0]["embedding"]
+        )
 
     return encodings

@@ -14,7 +14,7 @@ if __name__ == "__main__":
             "IP":"192.168.1.105",
             "queue":queue
         }
-        classifier = "l2"
+        classifier = "knn"
         recog_input = {
             "queue":queue,
             "clf_file":f"facenet_{classifier}_clf.joblib",
