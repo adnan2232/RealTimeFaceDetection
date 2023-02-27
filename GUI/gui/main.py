@@ -1,13 +1,14 @@
 import sys
 from PyQt5 import QtGui
-from PyQt5.QtWidgets import QMainWindow, QApplication
+from PyQt5.QtWidgets import QMainWindow, QApplication, QMessageBox
 from PyQt5.QtCore import pyqtSlot, Qt
 import numpy as np
 import cv2 as cv
 from gui_ui import Ui_MainWindow
-from multiprocessing import Queue
+from queue import Queue
 from videostream import VideoStream
-#rom facerecognizer import FaceRecognition
+from facerecognition import FaceRecognition
+
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -22,20 +23,23 @@ class MainWindow(QMainWindow):
 
         self.ui.save_sett_btn.clicked.connect(self.save_settings)
 
-        self.MPQueue = Queue(maxsize=1000)
+        self.queue = Queue(maxsize=1000)
         self.video_thread =VideoStream(
-            MPQueue = self.MPQueue,
+            queue = self.queue,
             username="aa2232786",
             password="aa2232786",
-            IP="192.168.1.105",
+            IP="192.168.1.104",
             detection_model = self.get_detection_model()
         )        
         self.video_thread.stream_signal.connect(self.update_frame)
         self.video_thread.start()
 
-        '''self.recog_thread = FaceRecognition(
-            MPQueue = self.MPQueue,
-        )'''
+        self.recog_thread = FaceRecognition(
+            queue = self.queue,
+            model_name = "Facenet"
+        )
+        self.recog_thread.start()
+        
 
 
     @pyqtSlot(np.ndarray)
@@ -83,7 +87,19 @@ class MainWindow(QMainWindow):
         self.ui.stackedWidget.setCurrentIndex(6)
     # -------------------------
     
+    def closeEvent(self, event):
+        
+        reply = QMessageBox.question(self, 'Message',
+            "Are you sure to quit?", QMessageBox.Yes, QMessageBox.No)
 
+        if reply == QMessageBox.Yes:
+            self.video_thread.requestInterruption()
+            self.recog_thread.requestInterruption()
+            self.video_thread.wait()
+            self.recog_thread.wait()
+            event.accept()
+        else:
+            event.ignore()
 
 
 if __name__ == "__main__":

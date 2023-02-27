@@ -1,68 +1,86 @@
-from PyQt5.QtCore import  QThread, pyqtSignal
-from encode_faces import encode_faces
-from save_load_encoding import load_encoding_json
-from joblib import load
-from sklearn.preprocessing import Normalizer
-from time import time
+from PyQt5.QtCore import QThread, pyqtSignal
+from FaceRecognizer.fr_template import FaceRecogTemp
+from itertools import count
+from datetime import date
 import numpy as np
+import cv2 as cv
 import csv
+import os
 
 
 class FaceRecognition(QThread):
+    def __init__(self, *arg, **kwarg):
 
-    def __init__(self,*arg,**kwarg):
+        super(FaceRecognition, self).__init__()
 
-        super(FaceRecognition,self).__init__()
-        self.queue = kwarg["MPqueue"]
-        self.knn= None
-        self.seen_file = open("face_seen.csv","a") 
+        self.queue = kwarg["queue"]
+        self.model_name = kwarg["model_name"]
+        self.model = FaceRecogTemp(self.model_name)
+        self.curr_date = date.today()
+        if not os.path.isdir("face_seen"):
+            os.mkdir("face_seen")
+        self.seen_file = open(f"face_seen/{self.curr_date.isoformat()}.csv", "a")
         self.writer = csv.writer(self.seen_file)
+       
+        self._run_flag= True
 
+    def close_file(self):
+        self.seen_file.flush()
+        self.seen_file.close()
 
-    def load_knn(self,encoding_path):
-        return load_encoding_json(encoding_path)
-
-    def recognize_face(self,features,minu,sec):
     
-        for feature in features:
-            pass
-            self.writer.writerow([name,minu,sec,threshold])
-
-    def load_classifier(self,file_name):
-        return load(file_name)
-
-    def face_encodings(self,frame,bboxes):
-        faces = [(frame[x:x+w,y:y+h],left_eye,right_eye) for x,y,w,h,left_eye,right_eye in bboxes]
-        return encode_faces_facenet(faces)
-
     def run(self):
         try:
-            
-            while(True):
-                
+
+            while not self.isInterruptionRequested():
+
+                if self.curr_date < date.today():
+                    self.close_file()
+                    self.curr_date = date.today()
+                    self.seen_file = open(
+                        f"face_seen/{self.curr_date.isoformat()}.csv", "a"
+                    )
+               
                 if self.queue.empty():
                     continue
-                    
-                frame,bboxes,con, (min,sec) = self.queue.get()
-
-                if not con:
-                    
-                    self.queue.close()
-                    break
-
-                faces_features = self.face_encodings(frame,bboxes)
-                if faces_features:
-                    self.recognize_face(faces_features,min,sec)
+                
+                
+                frame, bboxes, f_time = self.queue.get()
+                emb_v = self.model.create_encodings(frame, bboxes)
+                
+                res = self.model.predicts(emb_v)
+          
+                if res:
+                    self.writer.writerows(
+                        zip(*res,[f_time]*len(res))
+                    )
 
         except KeyboardInterrupt:
             print("recognition stop")
 
         finally:
             while not self.queue.empty():
-                frame,bboxes,con, (min,sec) = self.queue.get()
-                faces_features = self.face_encodings(frame,bboxes)
-                if faces_features:
-                    self.recognize_face(faces_features,min,sec)
-            self.seen_file.flush()
-            self.seen_file.close()
+                frame, bboxes, f_time = self.queue.get()
+                emb_v = self.model.create_encodings(frame, bboxes)
+                res = self.model.predicts(emb_v)
                 
+                if res:
+                    self.writer.writerows(
+                        zip(*res,[f_time]*len(res))
+                    )
+
+            self.close_file()
+
+    def stop(self):
+
+        while not self.queue.empty():
+            frame, bboxes, f_time = self.queue.get()
+            emb_v = self.model.create_encodings(frame, bboxes)
+            res = self.model.predicts(emb_v)
+            if res:
+                self.writer.writerows(
+                    zip(*res,[f_time]*len(res))
+                )
+
+        self.close_file()
+        self._run_flag = False

@@ -647,6 +647,8 @@ class Ui_MainWindow(object):
         code is buggy!
         '''
         path = os.path.join(self.ROOT_DIR, 'uploads')
+        if not os.path.isdir(path):
+            os.mkdir(path)
         lbl = QtWidgets.QLabel(self.upload_faces_page)
         # uploads list
         for i in os.listdir(path):
