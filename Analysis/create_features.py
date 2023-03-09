@@ -3,7 +3,7 @@ from shutil import rmtree
 import cv2 as cv
 from mtcnn_cv2 import MTCNN
 import mediapipe as mp
-from encode_faces import encode_faces_facenet
+from encode_faces import encode_faces
 from save_load_encoding import save_encoding_json
 import json
 import sys
@@ -73,7 +73,8 @@ def create_features(file_path):
                     names.append(name)
                     #cv.imwrite(cropped_folder+"/"+file,cr_face)
 
-    features_ls = encode_faces_facenet(faces_ls)
+    features_ls = encode_faces(faces_ls)
+
     save_encoding_json(features_ls,names,"feature_encoding.json")
 
 if __name__ == "__main__":

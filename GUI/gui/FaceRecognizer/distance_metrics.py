@@ -21,11 +21,11 @@ def match(
         return cosine(enc1, enc2) <= thresholds["cosine"]
 
     elif metrics == "l2":
-        return l2(enc1,enc2) <= thresholds["l2"]
+        return l2(enc1, enc2) <= thresholds["l2"]
 
     elif metrics == "l2_norm":
 
-        return l2(l2_norm(enc1),l2_norm(enc2)) <= thresholds["l2_norm"]
+        return l2(l2_norm(enc1), l2_norm(enc2)) <= thresholds["l2_norm"]
 
     else:
         raise ValueError("Distance Metrics not found")
