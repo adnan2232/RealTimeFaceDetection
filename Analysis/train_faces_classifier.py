@@ -7,7 +7,7 @@ import numpy as np
 import sys
 
 
-def train_svm(file_path,classifier_name="facenet"):
+def train_svm(file_path,classifier_name="ArcFace"):
     names, features_ls = load_encoding_json(file_path)
     in_encoder = Normalizer(norm="l2")
     features_ls = in_encoder.transform(features_ls)
@@ -19,11 +19,11 @@ def train_svm(file_path,classifier_name="facenet"):
     dump(model,classifier_name+"_svm_clf.joblib")
     dump(out_encoder,classifier_name+"_svm_enc_out.joblib")
 
-def train_knn(file_path,classifier_name="facenet"):
+def train_knn(file_path,classifier_name="ArcFace"):
     names, features_ls = load_encoding_json(file_path)
     out_encoder = LabelEncoder()
     output = out_encoder.fit_transform(names)
-    model = KNeighborsClassifier(n_neighbors=4)
+    model = KNeighborsClassifier(n_neighbors=2)
     model.fit(features_ls,output)
     dump(model,classifier_name+"_knn_clf.joblib")
     dump(out_encoder,classifier_name+"_knn_enc_out.joblib")

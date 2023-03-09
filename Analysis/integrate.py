@@ -17,8 +17,8 @@ if __name__ == "__main__":
         classifier = "knn"
         recog_input = {
             "queue":queue,
-            "clf_file":f"facenet_{classifier}_clf.joblib",
-            "name_enc_file":f"facenet_{classifier}_enc_out.joblib",
+            "clf_file":f"ArcFace_{classifier}_clf.joblib",
+            "name_enc_file":f"ArcFace_{classifier}_enc_out.joblib",
             "encoding_path":"feature_encoding.json",
             "classifier":classifier
         }

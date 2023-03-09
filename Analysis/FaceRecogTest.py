@@ -1,4 +1,4 @@
-from encode_faces import encode_faces_facenet
+from encode_faces import encode_faces
 from save_load_encoding import load_encoding_json
 from joblib import load
 from sklearn.preprocessing import Normalizer
@@ -37,7 +37,7 @@ class FaceRecognition:
             self.total_faces = len(self.names)
         
         self.in_encoder = Normalizer(norm="l2")
-        self.seen_file = open("face_seen_fn512_l2.csv","a") 
+        self.seen_file = open(f"face_seen_ArcFace_{self.classifier}.csv","a") 
         self.writer = csv.writer(self.seen_file)
         self.start_recognition()
 
@@ -57,8 +57,11 @@ class FaceRecognition:
             self.writer.writerow([name,min,sec])
 
     def recognize_face_knn(self,features,min,sec):
-
+       
         faces = self.clf.predict(features)
+        print(
+            self.clf.kneighbors(features)
+        )
         names = self.name_encoded.inverse_transform(faces)
             
         self.writer.writerows(zip(names,[min]*len(names),[sec]*len(names)))
@@ -74,15 +77,16 @@ class FaceRecognition:
                 else:
                     faces[self.names[i]] = [self.euclidean_distance(self.features[i],feature)]
 
-            name, threshold  = "unknown", FaceRecognition.thresholds["Facenet512"]["euclidean"]
+            name, threshold  = "unknown", FaceRecognition.thresholds["ArcFace"]["euclidean_l2"]
    
             for face_name, l2 in faces.items():
-                mean = np.min(l2)
+                mean = np.median(l2)
+        
                 if mean <= threshold:
                     threshold = mean
                     name = face_name
             
-            self.writer.writerow([name,minu,sec])
+            self.writer.writerow([name,minu,sec,threshold])
  
 
 
@@ -111,7 +115,7 @@ class FaceRecognition:
 
     def face_encodings(self,frame,bboxes):
         faces = [(frame[y:h,x:w],left_eye,right_eye) for x,y,w,h,left_eye,right_eye in bboxes]
-        return encode_faces_facenet([face for face in faces if (len(face[0].shape)>2 and face[0].shape[0]!=0 and face[0].shape[1]!=0)])
+        return encode_faces([face for face in faces if (len(face[0].shape)>2 and face[0].shape[0]!=0 and face[0].shape[1]!=0)])
 
     def start_recognition(self):
         try:
