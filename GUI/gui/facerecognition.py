@@ -28,7 +28,7 @@ class FaceRecognition(QThread):
         self.seen_file.flush()
         self.seen_file.close()
 
-    
+
     def run(self):
         try:
 

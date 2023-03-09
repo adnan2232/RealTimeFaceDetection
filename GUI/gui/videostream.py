@@ -18,6 +18,7 @@ class VideoStream(QThread):
         self.password = kwargs["password"]
         self.MPqueue = kwargs["queue"]
         self._run_flag = True
+        self.clah = cv.createCLAHE(clipLimit=3.0,tileGridSize=(7,7))
         
 
     def FaceDetection(self):
@@ -27,18 +28,21 @@ class VideoStream(QThread):
             return MTCNNWrapper()
         
     def frame_equlization_BGR_RGB(self,frame):
-        frame = cv.cvtColor(frame,cv.COLOR_BGR2YCrCb)
+        frame = cv.cvtColor(frame,cv.COLOR_BGR2LAB)
 
-        frame[:,:,0] = cv.equalizeHist(frame[:,:,0])
+        frame[:,:,0] = self.clah.apply(frame[:,:,0])
 
-        return cv.cvtColor(frame,cv.COLOR_YCrCb2RGB)
+        return cv.cvtColor(frame,cv.COLOR_LAB2RGB)
+    
+
 
     def run(self):
         self.face_detector = self.FaceDetection()
         self.capture = cv.VideoCapture(
-            f"rtsp://{self.username}:{self.password}@{self.IP}:554/stream2"
+            f"rtsp://{self.username}:{self.password}@{self.IP}:554/stream1"
         )
         fps = self.capture.get(cv.CAP_PROP_FPS)
+        print(fps)
         dropping = 1 if self.face_detector_model == "mediapipe" else 5
         recognizer_dropping = 1
         frame_no = 0

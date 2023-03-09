@@ -28,7 +28,7 @@ class MainWindow(QMainWindow):
             queue = self.queue,
             username="aa2232786",
             password="aa2232786",
-            IP="192.168.1.104",
+            IP="192.168.1.103",
             detection_model = self.get_detection_model()
         )        
         self.video_thread.stream_signal.connect(self.update_frame)
