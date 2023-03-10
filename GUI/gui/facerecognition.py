@@ -1,5 +1,6 @@
 from PyQt5.QtCore import QThread, pyqtSignal
 from FaceRecognizer.fr_template import FaceRecogTemp
+from joblib import Parallel, delayed
 from itertools import count
 from datetime import date
 import numpy as np
@@ -48,12 +49,13 @@ class FaceRecognition(QThread):
                 frame, bboxes, f_time = self.queue.get()
                 emb_v = self.model.create_encodings(frame, bboxes)
                 
-                res = self.model.predicts(emb_v)
+                res = self.model.predicts([emb for emb in emb_v if emb!=[]])
           
                 if res:
                     self.writer.writerows(
                         zip(*res,[f_time]*len(res))
                     )
+                del frame
 
         except KeyboardInterrupt:
             print("recognition stop")
@@ -62,13 +64,13 @@ class FaceRecognition(QThread):
             while not self.queue.empty():
                 frame, bboxes, f_time = self.queue.get()
                 emb_v = self.model.create_encodings(frame, bboxes)
-                res = self.model.predicts(emb_v)
+                res = self.model.predicts([emb for emb in emb_v if emb!=[]])
                 
                 if res:
                     self.writer.writerows(
                         zip(*res,[f_time]*len(res))
                     )
-
+                del frame
             self.close_file()
 
     def stop(self):
@@ -76,11 +78,11 @@ class FaceRecognition(QThread):
         while not self.queue.empty():
             frame, bboxes, f_time = self.queue.get()
             emb_v = self.model.create_encodings(frame, bboxes)
-            res = self.model.predicts(emb_v)
+            res = self.model.predicts([emb for emb in emb_v if emb!=[]])
             if res:
                 self.writer.writerows(
                     zip(*res,[f_time]*len(res))
                 )
-
+            del frame
         self.close_file()
         self._run_flag = False

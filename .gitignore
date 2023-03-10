@@ -132,5 +132,6 @@ dmypy.json
 #datasets
 lfw_home/
 video/
-**/face_seen.csv
+**/face_seen/
 **/feature_encoding.json
+

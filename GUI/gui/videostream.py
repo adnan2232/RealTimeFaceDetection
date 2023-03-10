@@ -1,9 +1,12 @@
 from FaceDetector.fd_mediaipipe import MediaPipeWrapper
 from FaceDetector.fd_mtcnn import MTCNNWrapper
+from collections import deque
+from math import ceil
 import numpy as np
 import cv2 as cv
 from PyQt5.QtCore import QThread, pyqtSignal
 from datetime import datetime
+from time import monotonic
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2' 
 
@@ -42,28 +45,49 @@ class VideoStream(QThread):
             f"rtsp://{self.username}:{self.password}@{self.IP}:554/stream1"
         )
         fps = self.capture.get(cv.CAP_PROP_FPS)
-        print(fps)
-        dropping = 1 if self.face_detector_model == "mediapipe" else 5
-        recognizer_dropping = 1
+        if fps==0:
+            fps = 15
+ 
+        detect_time = deque(maxlen=10)
+
+        detector_dropping = 1 
+        recognize_dropping=1
+    
+       
         frame_no = 0
         faces = None
         while not self.isInterruptionRequested():
             isframe, frame = self.capture.read()
+
             if not isframe:
                 continue
             curr_time = datetime.now()
 
             frame_no += 1
-            if frame_no % fps == 0:
+            if frame_no%fps==0:
                 frame_no = 0
 
             img_row, img_col = frame.shape[0], frame.shape[1]
             frame = self.frame_equlization_BGR_RGB(frame)
 
-            if frame_no % dropping == 0 or self.face_detector_model == "mediapipe":
+            if frame_no % detector_dropping == 0:
+                start_time = monotonic()
                 faces = self.face_detector.capture_faces(frame)
+                end_time = monotonic()
+                detect_time.append((end_time-start_time)*fps)
+
+            med = np.median(detect_time)
            
-            
+            if len(detect_time)>5 and not np.isnan(med) and ceil(med)> detector_dropping:
+                print(detect_time)
+                detector_dropping = ceil(med)
+                detect_time.clear()
+                print(detector_dropping)
+            elif len(detect_time)>5 and not np.isnan(med) and detector_dropping-ceil(med) >1:
+                print(detect_time)
+                detector_dropping = max(1,ceil(med))
+                print(detector_dropping)
+
             bboxes = []
             if faces:
                 for face in faces:
@@ -83,11 +107,16 @@ class VideoStream(QThread):
                     )
 
             self.stream_signal.emit(frame)
-            if frame_no%recognizer_dropping==0:
-                if self.MPqueue.full():
-                    self.MPqueue.get()
-                    recognizer_dropping += 2
+            curr_qsize = self.MPqueue.qsize()
+            
+            if curr_qsize-50*(recognize_dropping-1) >=50:
+                recognize_dropping = min(10,recognize_dropping+1)
+            elif 50*recognize_dropping-curr_qsize >= 20:
+                recognize_dropping = max(1,recognize_dropping-1)
 
+            if faces and frame_no%recognize_dropping==0:
+                
+                print(f"qsize: {curr_qsize}, dropping:{recognize_dropping}")
                 self.MPqueue.put(
                     (frame, bboxes, curr_time.strftime("%H:%M:%S"))
                 )
