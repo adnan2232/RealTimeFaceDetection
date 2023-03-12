@@ -23,6 +23,8 @@ class MainWindow(QMainWindow):
 
         self.ui.save_sett_btn.clicked.connect(self.save_settings)
 
+             
+
         self.queue = Queue(maxsize=1000)
         self.video_thread =VideoStream(
             queue = self.queue,
@@ -66,6 +68,11 @@ class MainWindow(QMainWindow):
         print(self.ui.processors_CB.currentText())
 
     # -----don't change this-----
+    def toggleShadow(self, btn, shadow_obj):
+        if btn.isChecked():
+            shadow_obj.setEnabled(True)
+        else:
+            shadow_obj.setEnabled(False)
     def changeState(self, pressed):
         if pressed:
             self.ui.sidebar.show()
@@ -73,18 +80,25 @@ class MainWindow(QMainWindow):
             self.ui.sidebar.hide()
     def on_home_btn_toggled(self):
         self.ui.stackedWidget.setCurrentIndex(0)
-    def on_add_data_btn_toggled(self):
+        self.toggleShadow(self.ui.home_btn, self.ui.home_btn_shadow)
+    def on_show_data_btn_toggled(self):
         self.ui.stackedWidget.setCurrentIndex(1)
+        self.toggleShadow(self.ui.show_data_btn, self.ui.show_data_btn_shadow)
     def on_recg_face_btn_toggled(self):
         self.ui.stackedWidget.setCurrentIndex(2)
+        self.toggleShadow(self.ui.recg_face_btn, self.ui.recg_face_btn_shadow)
     def on_sett_panel_btn_toggled(self):
         self.ui.stackedWidget.setCurrentIndex(3)
+        self.toggleShadow(self.ui.sett_panel_btn, self.ui.sett_panel_btn_shadow)
     def on_add_camera_btn_toggled(self):
         self.ui.stackedWidget.setCurrentIndex(4)
-    def on_test_video_btn_toggled(self):
+        self.toggleShadow(self.ui.add_camera_btn, self.ui.add_camera_btn_shadow)
+    def on_upload_videos_btn_toggled(self):
         self.ui.stackedWidget.setCurrentIndex(5)
-    def on_upload_faces_btn_toggled(self):
+        self.toggleShadow(self.ui.upload_videos_btn, self.ui.upload_videos_btn_shadow)
+    def on_upload_images_btn_toggled(self):
         self.ui.stackedWidget.setCurrentIndex(6)
+        self.toggleShadow(self.ui.upload_images_btn, self.ui.upload_images_btn_shadow)
     # -------------------------
     
     def closeEvent(self, event):

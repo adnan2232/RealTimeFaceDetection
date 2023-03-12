@@ -1,40 +1,56 @@
 * {
-    background-color: #021C1e;
+    /* background-color: #021C1e; */
+    /* background-color: #364694; */
+    /* background-color: #F8F7F1; */
     font-size: 15px;
-    color: #6FB98F;
+    /* color: #6FB98F; */
+    /* color: #000; */
 }
 
 #centralwidget {
     /* background-color: #2F3C7E; */
     /* background-color: #00539CFF; */
+    background-color: #B3EAF1;
     /* font-size: 15px; */
 }
 #header {
     /* background-color: #364694; */
-    border-bottom: 3px solid #2C7873;
+    /* border-bottom: 3px solid #2C7873; */
+    border-bottom: 3px solid #000000;
+}
+#menu_btn {
+    border: none;
 }
 
 /* sidebar widget css start */
 
 #sidebar {
-    background-color: #004445;
-    padding: 5px;
+    /* background-color: #004445; */
+    /* background-color: #000000; */
+    background-color: #F8F7F1;
+    /* color: #E7F6EF; */
+    /* padding: 5px; */
+    /* border-right: 10px solid blue; */
 }
 #sidebar QPushButton {
-    background-color: #004445;
-    border:1px solid #000;
+    /* background-color: #004445; */
+    background-color: #F8F7F1;
+    color: #000;
+    /* border:1px solid #000; */
     border-radius: 3px;
     text-align: left;
-    padding: 8px 0 8px 15px;
-    margin: 3px;
+    padding: 8px 5px 8px 15px;
+    margin: 5px;
 }
 
 #sidebar QPushButton:hover {
-    background-color: rgba( 86, 101, 115, 0.5);
+    /* background-color: rgba( 86, 101, 115, 0.5); */
+    background-color: rgba( 95, 97, 97, 0.5);
 }
 
 #sidebar QPushButton:checked {
-    color: #fff;
+    background-color: #254AF8;
+    color: #ffffff;
 }
 
 /* sidebar widget css end */
@@ -43,7 +59,7 @@
 /* content page css start */
 
 #stackedWidget {
-    background-color: #212faf;
+    /* background-color: #212faf; */
 }
 
 /* settings panel page css start */
