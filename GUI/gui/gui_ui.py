@@ -534,7 +534,7 @@ class Ui_MainWindow(object):
         
         # upload faces page button
         self.upload_images_page_btn = QtWidgets.QPushButton(self.upload_images_page)
-        self.upload_images_page_btn.clicked.connect(self.upload_faces)
+        # self.upload_images_page_btn.clicked.connect(self.upload_faces)
 
         # your uploads label
         self.uploads_lbl = QtWidgets.QLabel(self.upload_images_page)
@@ -555,7 +555,7 @@ class Ui_MainWindow(object):
         self.scroll = QtWidgets.QScrollArea()
         self.widget = QtWidgets.QWidget()
 
-        self.uploads()
+        # self.uploads()
 
         self.widget.setLayout(self.uploads_vbl)
 
@@ -659,46 +659,46 @@ class Ui_MainWindow(object):
 
 
 
-    def upload_faces(self):
-        # ROOT_DIR = os.path.realpath(os.path.join(os.path.dirname(__file__), '..'))
-        path = os.path.join(self.ROOT_DIR, 'uploads', self.folder_name_txt.text())
-        try: os.mkdir(path)
-        except OSError: pass
-        img_paths, _ = QFileDialog.getOpenFileNames(None, "UPLOAD IMAGES", self.ROOT_DIR, "Images (*.png *.jpg *.jpeg)")
-        i = len(os.listdir(path))
+    # def upload_faces(self):
+    #     # ROOT_DIR = os.path.realpath(os.path.join(os.path.dirname(__file__), '..'))
+    #     path = os.path.join(self.ROOT_DIR, 'uploads', self.folder_name_txt.text())
+    #     try: os.mkdir(path)
+    #     except OSError: pass
+    #     img_paths, _ = QFileDialog.getOpenFileNames(None, "UPLOAD IMAGES", self.ROOT_DIR, "Images (*.png *.jpg *.jpeg)")
+    #     i = len(os.listdir(path))
         
-        if img_paths:
-            for img_path in img_paths:
-                img = cv2.imread(img_path)
-                os.chdir(path)
-                fname = self.folder_name_txt.text()+"_"+str(i)+"."+str(img_path.split('.')[-1])
-                # dt = str(datetime.datetime.now().strftime("%Y%m%d%H%M%S"))
-                # fname = self.folder_name_txt.text()+"_"+dt+"."+str(img_path.split('.')[-1])
-                cv2.imwrite(fname, img)
-                i+=1
-                self.success_label.show()
-                self.success_label_btn.show()
-                self.uploads()
-        self.folder_name_txt.clear()
+    #     if img_paths:
+    #         for img_path in img_paths:
+    #             img = cv2.imread(img_path)
+    #             os.chdir(path)
+    #             fname = self.folder_name_txt.text()+"_"+str(i)+"."+str(img_path.split('.')[-1])
+    #             # dt = str(datetime.datetime.now().strftime("%Y%m%d%H%M%S"))
+    #             # fname = self.folder_name_txt.text()+"_"+dt+"."+str(img_path.split('.')[-1])
+    #             cv2.imwrite(fname, img)
+    #             i+=1
+    #             self.success_label.show()
+    #             self.success_label_btn.show()
+    #             self.uploads()
+    #     self.folder_name_txt.clear()
 
-    def uploads(self):
-        '''
-        this method updates the list of uploaded images.
-        code is buggy!
-        '''
-        path = os.path.join(self.ROOT_DIR, 'uploads')
-        lbl = QtWidgets.QLabel(self.upload_images_page)
-        # uploads list
-        for i in os.listdir(path):
-            inner_dir_path = os.path.join(path, i)
-            if not os.path.isfile(inner_dir_path):
-                for img_path in os.listdir(inner_dir_path):
-                    lbl.setText(i+"\\"+img_path)
-                    self.uploads_vbl.addWidget(lbl)
+    # def uploads(self):
+    #     '''
+    #     this method updates the list of uploaded images.
+    #     code is buggy!
+    #     '''
+    #     path = os.path.join(self.ROOT_DIR, 'uploads')
+    #     lbl = QtWidgets.QLabel(self.upload_images_page)
+    #     # uploads list
+    #     for i in os.listdir(path):
+    #         inner_dir_path = os.path.join(path, i)
+    #         if not os.path.isfile(inner_dir_path):
+    #             for img_path in os.listdir(inner_dir_path):
+    #                 lbl.setText(i+"\\"+img_path)
+    #                 self.uploads_vbl.addWidget(lbl)
     
-    def success_close(self, label, button):
-        label.hide()
-        button.hide()
+    # def success_close(self, label, button):
+    #     label.hide()
+    #     button.hide()
 
 
 
