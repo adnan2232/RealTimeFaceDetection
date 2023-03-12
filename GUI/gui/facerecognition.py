@@ -72,7 +72,6 @@ class FaceRecognition(QThread):
                 if self.queue.empty():
                     continue
                 
-                
                 frame, bboxes, f_time = self.queue.get()
                 emb_v = self.model.create_encodings(frame, bboxes)
                 
