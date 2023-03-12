@@ -33,6 +33,9 @@ class FaceRecognition(QThread):
         self._run_flag= True
 
     def writeCSV(self):
+        if self.seen_file.closed:
+            self.seen_file = open(f"face_seen/{self.curr_date.isoformat()}.csv", "a")
+            self.writer = csv.writer(self.seen_file)
         
         for key in self.seen:
             

@@ -469,7 +469,7 @@ class Ui_MainWindow(object):
 
         # adding rows to form layout
         self.upload_videos_FL.addRow(QtWidgets.QLabel("ADD FOLDER NAME: "), self.upload_videos_text)
-        self.upload_videos_FL.addRow(QtWidgets.QPushButton("BROWSE VIDEOS", clicked = lambda: self.upload_videos()))
+        
 
 
         
@@ -607,24 +607,67 @@ class Ui_MainWindow(object):
 
 
 # all about uploads
+    
 
-    def upload_videos(self):
-        path = os.path.join(self.ROOT_DIR, 'uploaded_videos', self.upload_videos_text.text())
+    # def upload_videos(self):
+    #     from FaceRecognizer.fr_template import FaceRecogTemp
+    #     from FaceDetector.fd_mediaipipe import MediaPipeWrapper
+    #     import cv2 as cv
 
-        try: os.mkdir(path)
-        except OSError: pass
-        vid_paths, _ = QFileDialog.getOpenFileNames(None, "UPLOAD VIDEOS", self.ROOT_DIR, "Videos (*.mp4)")
-        i = len(os.listdir(path))
 
-        if vid_paths:
-            for vid_path in vid_paths:
-                fname = self.upload_videos_text.text()+"_"+str(i)+"."+str(vid_path.split('.')[-1])
-                path += '\\' + fname
-                # print(path)
-                # print(vid_path)
-                shutil.copy(vid_path, path)
+    #     path = os.path.join(self.ROOT_DIR, 'uploaded_videos', self.upload_videos_text.text())
 
-        QtWidgets.QMessageBox.information(self.upload_videos_page, 'Success', 'Videos uploaded successfully!')
+    #     if not os.path.isdir(path):
+    #         os.makedirs(path)
+    #     vid_paths, _ = QFileDialog.getOpenFileNames(None, "UPLOAD VIDEOS", self.ROOT_DIR, "Videos (*.mp4)")
+    #     i = len(os.listdir(path))
+
+    #     if vid_paths:
+    #         face_models = [FaceRecogTemp(model_name=model_name) for model_name in FaceRecogTemp.models]
+    #         face_detector = MediaPipeWrapper()
+    #         for vid_path in vid_paths:
+    #             fname = self.upload_videos_text.text()+"_"+str(i)+"."+str(vid_path.split('.')[-1])
+    #             path += '/' + fname
+    #             # print(path)
+    #             # print(vid_path)
+    #             if not os.path.isdir(path):
+    #                 os.makedirs(path)
+    #             shutil.copy(vid_path, path)
+    #             print(path+vid_path.split("/")[-1])
+    #             capture = cv.VideoCapture(path+"/"+vid_path.split("/")[-1])
+    #             fps = int(capture.get(cv.CAP_PROP_FPS))
+    #             if fps==0:
+    #                 fps = 15
+    #             print(fps)
+    #             frame_no = 0
+    #             while(True):
+    #                 isframe, frame = capture.read()
+
+    #                 frame_no += 1
+    #                 if frame_no%fps:
+    #                     continue
+    #                 print(isframe)
+    #                 if not isframe:
+    #                     break
+    #                 print(frame_no)
+    #                 faces = face_detector.capture_faces(frame)
+
+    #                 if faces:
+    #                     bbox = face_detector.get_bbox(faces[0],frame.shape[0],frame.shape[1])
+                        
+    #                     for face_model in face_models:
+                            
+    #                         face_model.create_save_encoding(
+    #                             str(self.upload_videos_text.text()),cv.cvtColor(frame,cv.COLOR_BGR2RGB),
+    #                             bbox[0][0],bbox[0][1],
+    #                             bbox[1][0],bbox[1][1],
+    #                             bbox[2][0], bbox[2][1]
+    #                         )
+
+    #             capture.release()
+
+
+    #     QtWidgets.QMessageBox.information(self.upload_videos_page, 'Success', 'Videos uploaded successfully!')
 
 
         # try: os.mkdir(path)

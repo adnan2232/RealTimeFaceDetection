@@ -10,14 +10,14 @@ from joblib import Parallel, delayed
 
 class FaceRecogTemp:
 
-    models = {"Facenet", "Facenet512", "ArcFace", "Dlib"}
+    models = ["Facenet", "Facenet512", "ArcFace"]
     thresholds_global = {
         "Facenet": {"cosine": 0.40, "l2": 10, "l2_norm": 0.80},
         "Facenet512": {"cosine": 0.30, "l2": 23.56, "l2_norm": 1.04},
         "ArcFace": {"cosine": 0.68, "l2": 4.15, "l2_norm": 1.13},
-        "Dlib": {"cosine": 0.07, "l2": 0.6, "l2_norm": 0.4},
+        
     }
-    __knn = KNeighborsClassifier(n_neighbors=2)
+    
 
     def __init__(self, model_name: str = "Facenet") -> None:
 
@@ -25,24 +25,16 @@ class FaceRecogTemp:
             raise ValueError(f"No model name: {model_name}")
 
         self.model_name = model_name
+        self.knn = KNeighborsClassifier(n_neighbors=2)
+        self.encodings = self.fetch_encoding()
+        self.thresholds = FaceRecogTemp.thresholds_global[model_name]
+        self.fit_knn()
+        
 
-        FaceRecogTemp.__db = TinyDB(f"{model_name}.db")
-        FaceRecogTemp.__encodings = FaceRecogTemp.__fetch_encoding()
-        FaceRecogTemp.__thresholds = FaceRecogTemp.thresholds_global[model_name]
-        FaceRecogTemp.__query = Query()
-        FaceRecogTemp.__fit_knn()
-
-    @classmethod
-    def __fetch_encoding(cls) -> list[dict]:
-        return FaceRecogTemp.__db.all()
-
-    @property
-    def thresholds(self):
-        return FaceRecogTemp.__thresholds
-
-    @property
-    def encodings(self):
-        return FaceRecogTemp.__encodings
+  
+    def fetch_encoding(self) -> list[dict]:
+        
+        return TinyDB(f"{self.model_name}.db").all()
 
     def create_encoding(
         self,
@@ -57,16 +49,18 @@ class FaceRecogTemp:
             al_img = img
         finally:
             try:
+                
                 enc = DeepFace.represent(
                     img_path=self.normalize_input(al_img),
                     model_name=self.model_name,
                     detector_backend="skip",
-                )[0]["embedding"]
-
-                return np.array(enc) / np.linalg.norm(enc)
+                )
+             
+                return np.array(enc[0]["embedding"]) / np.linalg.norm(enc[0]["embedding"])
             
             except:
-                return []
+                
+                return np.array([])
 
     def create_encodings(self, img: np.array, bboxes: list[list[int]]) -> list[list]:
 
@@ -82,12 +76,8 @@ class FaceRecogTemp:
         return res
 
     def save_encoding(self, name: str, encoding: Union[list, np.array]) -> None:
-
-        FaceRecogTemp.__db.insert({"name": name, "encoding": encoding})
-
-        FaceRecogTemp.__encodings.append({"name": name, "encoding": encoding})
-
-        FaceRecogTemp.__fit_knn()
+        TinyDB(f"{self.model_name}.db").insert({"name": name, "encoding": encoding})
+    
 
     def create_save_encoding(
         self,
@@ -102,13 +92,16 @@ class FaceRecogTemp:
     ) -> None:
 
         encoding = self.create_encoding(img[y:h, x:w], left_eye, right_eye).tolist()
+       
+        if len(encoding)==0:
+            return
         self.save_encoding(name, encoding)
 
     def delete_encoding(self, name: str) -> None:
-
-        FaceRecogTemp.__db.remove(FaceRecogTemp.__query.name == name)
-        FaceRecogTemp.__encodings = FaceRecogTemp.__fetch_encoding()
-        FaceRecogTemp.__fit_knn()
+       
+        TinyDB(f"{self.model_name}.db").remove(Query().name == name)
+    
+        
 
     def verify(self, enc1: np.array, enc2: np.array, metrics: str = "default") -> bool:
 
@@ -126,21 +119,22 @@ class FaceRecogTemp:
                 metrics = "l2_norm"
 
         return match(enc1, enc2, self.thresholds, metrics)
-
-    @property
-    def knn(self):
-        return FaceRecogTemp.__knn
-
-    @classmethod
-    def __fit_knn(cls) -> None:
-        if len(FaceRecogTemp.__encodings) > 0:
-            FaceRecogTemp.__knn.fit(
-                [enc["encoding"] for enc in FaceRecogTemp.__encodings],
-                [enc["name"] for enc in FaceRecogTemp.__encodings],
-            )
+  
+    def fit_knn(self) -> None:
+        if len(self.encodings) > 0:
+            encs,names =[],[]
+            for enc in self.encodings:
+                if len(enc["encoding"]) >0:
+                    encs.append(enc["encoding"])
+                    names.append(enc["name"])
+            if names!=[]:
+                self.knn.fit(
+                    encs,
+                    names,
+                )
 
     def predicts(self, vec: list[np.array]) -> list[list[str, float]]:
-        if len(FaceRecogTemp.__encodings) <= 0 or len(vec) <= 0:
+        if len(self.encodings) <= 0 or len(vec) <= 0:
             return []
         res_name = []
         res_conf = []
@@ -167,13 +161,13 @@ class FaceRecogTemp:
 
         elif self.model_name == "Facenet512":
 
-            img /= 127.5
-            img -= 1
+            img = img/127.5
+            img = img-1
 
         elif self.model_name == "ArcFace":
 
-            img -= 127.5
-            img /= 128
+            img = img-127.5
+            img = img/128
         else:
             raise ValueError(f"unimplemented normalization type - {self.model_name}")
 
