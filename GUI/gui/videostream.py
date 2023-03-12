@@ -111,15 +111,17 @@ class VideoStream(QThread):
             
             if curr_qsize-50*(recognize_dropping-1) >=50:
                 recognize_dropping = min(10,recognize_dropping+1)
-            elif 50*recognize_dropping-curr_qsize >= 20:
+            elif 50*recognize_dropping-curr_qsize >= 50:
                 recognize_dropping = max(1,recognize_dropping-1)
 
             if faces and frame_no%recognize_dropping==0:
                 
-                print(f"qsize: {curr_qsize}, dropping:{recognize_dropping}")
+                #print(f"qsize: {curr_qsize}, dropping:{recognize_dropping}")
                 self.MPqueue.put(
-                    (frame, bboxes, curr_time.strftime("%H:%M:%S"))
+                    (frame.copy(), bboxes.copy(), curr_time.strftime("%H:%M:%S"))
                 )
+            del frame
+            del bboxes
 
     def stop(self):
         self.capture.release()
