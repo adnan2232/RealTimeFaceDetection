@@ -5,6 +5,7 @@ from typing import Union
 from tinydb import TinyDB, Query
 from deepface import DeepFace
 import numpy as np
+from joblib import Parallel, delayed
 
 
 class FaceRecogTemp:
@@ -46,44 +47,37 @@ class FaceRecogTemp:
     def create_encoding(
         self,
         img: np.array,
-        x: np.int8,
-        y: np.int8,
-        w: np.int8,
-        h: np.int8,
         left_eye: np.int8,
         right_eye: np.int8,
     ) -> Union[list, np.array]:
-        
+
         try:
-            al_img = alignment_procedure(img[y:h, x:w], left_eye, right_eye)
+            al_img = alignment_procedure(img, left_eye, right_eye)
         except Exception:
             al_img = img
         finally:
-            enc = DeepFace.represent(
-                img_path=self.normalize_input(al_img),
-                model_name=self.model_name,
-                detector_backend="skip",
-            )[0]["embedding"]
+            try:
+                enc = DeepFace.represent(
+                    img_path=self.normalize_input(al_img),
+                    model_name=self.model_name,
+                    detector_backend="skip",
+                )[0]["embedding"]
 
-            return np.array(enc)/np.linalg.norm(enc)
+                return np.array(enc) / np.linalg.norm(enc)
+            
+            except:
+                return []
 
-    def create_encodings(
-        self, img: np.array, bboxes: list[list[int]]
-    ) -> list[list]:
-        
-        res = []
-        for bbox in bboxes:
-            res.append(
-                self.create_encoding(
-                    img,
-                    bbox["x"],
-                    bbox["y"],
-                    bbox["w"],
-                    bbox["h"],
-                    bbox["left_eye"],
-                    bbox["right_eye"],
-                ).tolist()
+    def create_encodings(self, img: np.array, bboxes: list[list[int]]) -> list[list]:
+
+        res = Parallel(n_jobs=-1,prefer="threads")(
+            delayed(self.create_encoding)(
+                img[bbox["y"] : bbox["h"], bbox["x"] : bbox["w"]],
+                bbox["left_eye"],
+                bbox["right_eye"],
             )
+            for bbox in bboxes
+        )
 
         return res
 
@@ -106,8 +100,8 @@ class FaceRecogTemp:
         left_eye: np.int8,
         right_eye: np.int8,
     ) -> None:
-     
-        encoding = self.create_encoding(img, x, y, w, h, left_eye, right_eye).tolist()
+
+        encoding = self.create_encoding(img[y:h, x:w], left_eye, right_eye).tolist()
         self.save_encoding(name, encoding)
 
     def delete_encoding(self, name: str) -> None:
@@ -136,34 +130,35 @@ class FaceRecogTemp:
     @property
     def knn(self):
         return FaceRecogTemp.__knn
-    
+
     @classmethod
     def __fit_knn(cls) -> None:
-        if len(FaceRecogTemp.__encodings)>0:
+        if len(FaceRecogTemp.__encodings) > 0:
             FaceRecogTemp.__knn.fit(
-                [enc["encoding"] for enc in FaceRecogTemp.__encodings],[enc["name"] for enc in FaceRecogTemp.__encodings]
+                [enc["encoding"] for enc in FaceRecogTemp.__encodings],
+                [enc["name"] for enc in FaceRecogTemp.__encodings],
             )
 
-    def predicts(self,vec: list[np.array]) -> list[list[str,float]]:
-        if len(FaceRecogTemp.__encodings)<=0 or len(vec)<=0:
+    def predicts(self, vec: list[np.array]) -> list[list[str, float]]:
+        if len(FaceRecogTemp.__encodings) <= 0 or len(vec) <= 0:
             return []
-        res_name =[]
+        res_name = []
         res_conf = []
         dist = self.knn.kneighbors(vec)[0]
         name = self.knn.predict(vec)
         n = len(vec)
-      
+
         for i in range(n):
-    
-            if round(np.min(dist[i]),2)<=self.thresholds["l2_norm"]:
+
+            if round(np.min(dist[i]), 2) <= self.thresholds["l2_norm"]:
                 res_name.append(name[i])
-                res_conf.append(round(np.min(dist[i]),2))
+                res_conf.append(round(np.min(dist[i]), 2))
 
-        return [res_name,res_conf]
+        return [res_name, res_conf]
 
-    def normalize_input(self,img):
+    def normalize_input(self, img):
 
-        if self.model_name == "base" or self.model_name=="Dlib":
+        if self.model_name == "base" or self.model_name == "Dlib":
             return img
 
         elif self.model_name == "Facenet":
@@ -171,12 +166,12 @@ class FaceRecogTemp:
             img = (img - mean) / std
 
         elif self.model_name == "Facenet512":
-            
+
             img /= 127.5
             img -= 1
 
         elif self.model_name == "ArcFace":
-            
+
             img -= 127.5
             img /= 128
         else:
