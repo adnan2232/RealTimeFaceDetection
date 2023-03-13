@@ -44,6 +44,7 @@ class VideoStream(QThread):
         self.capture = cv.VideoCapture(
             f"rtsp://{self.username}:{self.password}@{self.IP}:554/stream1"
         )
+        # self.capture = cv.VideoCapture(0)
         fps = self.capture.get(cv.CAP_PROP_FPS)
         if fps==0:
             fps = 15
@@ -51,7 +52,7 @@ class VideoStream(QThread):
         detect_time = deque(maxlen=10)
 
         detector_dropping = 1 
-        recognize_dropping=1
+        recognize_dropping=fps
     
        
         frame_no = 0
@@ -116,7 +117,7 @@ class VideoStream(QThread):
 
             if faces and frame_no%recognize_dropping==0:
                 
-                #print(f"qsize: {curr_qsize}, dropping:{recognize_dropping}")
+                # print(f"qsize: {curr_qsize}, dropping:{recognize_dropping}")
                 self.MPqueue.put(
                     (frame.copy(), bboxes.copy(), curr_time.strftime("%H:%M:%S"))
                 )

@@ -331,7 +331,7 @@ class Ui_MainWindow(object):
 
         # detection model label
         self.detection_model_label = QtWidgets.QLabel(self.sett_panel_page)
-        self.detection_model_label.setMinimumSize(QtCore.QSize(220, 25))
+        self.detection_model_label.setMinimumSize(QtCore.QSize(250, 25))
         self.detection_model_label.setScaledContents(True)
         self.detection_model_label.setAlignment(QtCore.Qt.AlignCenter)
         self.detection_model_label.setObjectName("detection_model_label")
@@ -356,7 +356,7 @@ class Ui_MainWindow(object):
 
         # recognition model label
         self.recognition_model_label = QtWidgets.QLabel(self.sett_panel_page)
-        self.recognition_model_label.setMinimumSize(QtCore.QSize(220, 25))
+        self.recognition_model_label.setMinimumSize(QtCore.QSize(250, 25))
         self.recognition_model_label.setScaledContents(True)
         self.recognition_model_label.setAlignment(QtCore.Qt.AlignCenter)
         self.recognition_model_label.setObjectName("recognition_model_label")
@@ -379,7 +379,7 @@ class Ui_MainWindow(object):
 
         # processor label
         self.processors_label = QtWidgets.QLabel(self.sett_panel_page)
-        self.processors_label.setMinimumSize(QtCore.QSize(220, 25))
+        self.processors_label.setMinimumSize(QtCore.QSize(250, 25))
         self.processors_label.setScaledContents(True)
         self.processors_label.setAlignment(QtCore.Qt.AlignCenter)
         self.processors_label.setObjectName("processors_label")
@@ -447,7 +447,10 @@ class Ui_MainWindow(object):
 
         # add camera form
         self.add_camera_FL = QtWidgets.QFormLayout()
-        self.add_camera_FL.addRow(QtWidgets.QLabel("ADD CAMERA LINK: "), QtWidgets.QLineEdit())
+        self.add_camera_lbl = QtWidgets.QLabel("ADD CAMERA LINK:")
+        self.add_camera_lbl.setObjectName('add_camera_lbl')
+
+        self.add_camera_FL.addRow(self.add_camera_lbl, QtWidgets.QLineEdit())
 
         self.add_camera_page.setLayout(self.add_camera_FL)
 
@@ -465,17 +468,21 @@ class Ui_MainWindow(object):
 
         # test video form
         self.upload_videos_FL = QtWidgets.QFormLayout()
+        self.upload_videos_lbl = QtWidgets.QLabel("ADD FOLDER NAME:")
+        self.upload_videos_lbl.setObjectName('upload_videos_lbl')
         self.upload_videos_text = QtWidgets.QLineEdit()
 
         # adding rows to form layout
-        self.upload_videos_FL.addRow(QtWidgets.QLabel("ADD FOLDER NAME: "), self.upload_videos_text)
-        
+        self.upload_videos_FL.addRow(self.upload_videos_lbl, self.upload_videos_text)
+                
+        # 
+        self.videos_list_widget = QtWidgets.QListWidget()
 
 
-        
         # test video page layout
         self.upload_videos_vbl = QtWidgets.QVBoxLayout()
         self.upload_videos_vbl.addLayout(self.upload_videos_FL)
+        self.upload_videos_vbl.addWidget(self.videos_list_widget)
 
         self.upload_videos_page.setLayout(self.upload_videos_vbl)
 
@@ -488,91 +495,34 @@ class Ui_MainWindow(object):
 
         # --------------------upload images page start--------------------
 
-        # upload faces page
+        # upload images page
         self.upload_images_page = QtWidgets.QWidget()
         self.upload_images_page.setObjectName("upload_images_page")
 
-        self.vbl = QtWidgets.QVBoxLayout()
-        self.upload_face_vbl = QtWidgets.QVBoxLayout()
-        self.uploads_vbl = QtWidgets.QVBoxLayout()
+        # upload images form
+        self.upload_images_FL = QtWidgets.QFormLayout()
+        self.upload_images_lbl = QtWidgets.QLabel("ADD FOLDER NAME:")
+        self.upload_images_lbl.setObjectName('upload_images_lbl')
+        self.upload_images_text = QtWidgets.QLineEdit()
 
-        # successful message label
-        self.success_label = QtWidgets.QLabel(self.upload_images_page)
-        self.success_label.setMinimumSize(QtCore.QSize(500, 20))
-        self.success_label.setAlignment(QtCore.Qt.AlignCenter)
-        self.success_label.setObjectName("success_label")
-        # successful message close button
-        self.success_label_btn = QtWidgets.QPushButton(self.upload_images_page)
-        self.success_label_btn.setIcon(icon7)
-        self.success_label_btn.setIconSize(QtCore.QSize(20, 20))
-        self.success_label_btn.setCheckable(True)
-        self.success_label_btn.setAutoExclusive(True)
-        self.success_label_btn.setObjectName("success_label_btn")
-        self.success_label_btn.clicked.connect(
-            lambda: self.success_close(self.success_label, self.success_label_btn)
-            )
-        # success message cell in horizontal layout
-        self.success_msg_HL = QtWidgets.QHBoxLayout()
-        self.success_msg_HL.setObjectName("success_msg_HL")
-        self.success_msg_HL.addWidget(self.success_label)
-        self.success_msg_HL.addItem(
-            QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-        )
-        self.success_msg_HL.addWidget(self.success_label_btn)
+        # adding rows to form layout
+        self.upload_images_FL.addRow(self.upload_images_lbl, self.upload_images_text)
+                
+        # 
+        self.images_list_widget = QtWidgets.QListWidget()
 
-        # folder name label
-        self.folder_name_lbl = QtWidgets.QLabel(self.upload_images_page)
-        self.folder_name_lbl.setAlignment(QtCore.Qt.AlignCenter)
-        self.folder_name_lbl.setObjectName("folder_name_lbl")
-        # folder name text field
-        self.folder_name_txt = QtWidgets.QLineEdit()
-        # folder name cell in horizontal layout
-        self.folder_name_HL = QtWidgets.QHBoxLayout()
-        self.folder_name_HL.setObjectName("folder_name_HL")
-        self.folder_name_HL.addWidget(self.folder_name_lbl)
-        self.folder_name_HL.addWidget(self.folder_name_txt)
-        
-        # upload faces page button
-        self.upload_images_page_btn = QtWidgets.QPushButton(self.upload_images_page)
-        # self.upload_images_page_btn.clicked.connect(self.upload_faces)
 
-        # your uploads label
-        self.uploads_lbl = QtWidgets.QLabel(self.upload_images_page)
-        self.uploads_lbl.setObjectName("uploads_lbl")
+        # upload images page layout
+        self.upload_images_vbl = QtWidgets.QVBoxLayout()
+        self.upload_images_vbl.addLayout(self.upload_images_FL)
+        self.upload_images_vbl.addWidget(self.images_list_widget)
 
-        # upload faces page in vertical layout
-        self.upload_face_vbl.addLayout(self.success_msg_HL)
-        self.upload_face_vbl.addItem(
-            QtWidgets.QSpacerItem(20, 50, QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Expanding)
-        )
-        self.upload_face_vbl.addLayout(self.folder_name_HL)
-        self.upload_face_vbl.addWidget(self.upload_images_page_btn)
-        self.upload_face_vbl.addItem(
-            QtWidgets.QSpacerItem(20, 50, QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Expanding)
-        )
-        self.upload_face_vbl.addWidget(self.uploads_lbl)
+        self.upload_images_page.setLayout(self.upload_images_vbl)
 
-        self.scroll = QtWidgets.QScrollArea()
-        self.widget = QtWidgets.QWidget()
-
-        # self.uploads()
-
-        self.widget.setLayout(self.uploads_vbl)
-
-        #Scroll Area Properties
-        self.scroll.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
-        self.scroll.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
-        self.scroll.setWidgetResizable(True)
-        self.scroll.setWidget(self.widget)
-
-        self.vbl.addLayout(self.upload_face_vbl)
-        self.vbl.addWidget(self.scroll)
-        self.upload_images_page.setLayout(self.vbl)
-
+        # upload images page in stacked widget
         self.stackedWidget.addWidget(self.upload_images_page)
 
-        self.success_label.hide()
-        self.success_label_btn.hide()
+
         
         # --------------------upload images page end--------------------
 
@@ -604,144 +554,7 @@ class Ui_MainWindow(object):
         self.retranslateUi(MainWindow)
         self.close_btn.clicked.connect(MainWindow.close)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
-
-
-# all about uploads
-    
-
-    # def upload_videos(self):
-    #     from FaceRecognizer.fr_template import FaceRecogTemp
-    #     from FaceDetector.fd_mediaipipe import MediaPipeWrapper
-    #     import cv2 as cv
-
-
-    #     path = os.path.join(self.ROOT_DIR, 'uploaded_videos', self.upload_videos_text.text())
-
-    #     if not os.path.isdir(path):
-    #         os.makedirs(path)
-    #     vid_paths, _ = QFileDialog.getOpenFileNames(None, "UPLOAD VIDEOS", self.ROOT_DIR, "Videos (*.mp4)")
-    #     i = len(os.listdir(path))
-
-    #     if vid_paths:
-    #         face_models = [FaceRecogTemp(model_name=model_name) for model_name in FaceRecogTemp.models]
-    #         face_detector = MediaPipeWrapper()
-    #         for vid_path in vid_paths:
-    #             fname = self.upload_videos_text.text()+"_"+str(i)+"."+str(vid_path.split('.')[-1])
-    #             path += '/' + fname
-    #             # print(path)
-    #             # print(vid_path)
-    #             if not os.path.isdir(path):
-    #                 os.makedirs(path)
-    #             shutil.copy(vid_path, path)
-    #             print(path+vid_path.split("/")[-1])
-    #             capture = cv.VideoCapture(path+"/"+vid_path.split("/")[-1])
-    #             fps = int(capture.get(cv.CAP_PROP_FPS))
-    #             if fps==0:
-    #                 fps = 15
-    #             print(fps)
-    #             frame_no = 0
-    #             while(True):
-    #                 isframe, frame = capture.read()
-
-    #                 frame_no += 1
-    #                 if frame_no%fps:
-    #                     continue
-    #                 print(isframe)
-    #                 if not isframe:
-    #                     break
-    #                 print(frame_no)
-    #                 faces = face_detector.capture_faces(frame)
-
-    #                 if faces:
-    #                     bbox = face_detector.get_bbox(faces[0],frame.shape[0],frame.shape[1])
-                        
-    #                     for face_model in face_models:
-                            
-    #                         face_model.create_save_encoding(
-    #                             str(self.upload_videos_text.text()),cv.cvtColor(frame,cv.COLOR_BGR2RGB),
-    #                             bbox[0][0],bbox[0][1],
-    #                             bbox[1][0],bbox[1][1],
-    #                             bbox[2][0], bbox[2][1]
-    #                         )
-
-    #             capture.release()
-
-
-    #     QtWidgets.QMessageBox.information(self.upload_videos_page, 'Success', 'Videos uploaded successfully!')
-
-
-        # try: os.mkdir(path)
-        # except OSError: pass
-        # vid_paths, _ = QFileDialog.getOpenFileNames(None, "UPLOAD VIDEOS", self.ROOT_DIR, "Videos (*.mp4)")
-        # i = len(os.listdir(path))
         
-        # if vid_paths:
-        #     for vid_path in vid_paths:
-        #         vid_cap = cv2.VideoCapture(vid_path)
-        #         os.chdir(path)
-        #         fname = self.upload_videos_text.text()+"_"+str(i)+"."+str(vid_path.split('.')[-1])
-        #         frame_w = 1920
-        #         frame_h = 1080
-        #         fps = 50
-        #         vid_out = cv2.VideoWriter(fname, cv2.VideoWriter_fourcc('m', 'p', '4', 'v'), fps, (frame_w, frame_h))
-                 
-        #         while(True):
-        #             ret, frame = vid_cap.read()
-        #             if ret == True: 
-        #                 vid_out.write(frame)
-        #             else:
-        #                 break 
-        #             vid_cap.release()
-        #             vid_out.release()
-
-        #         i+=1
-        #         # self.success_label.show()
-        #         # self.success_label_btn.show()
-        #         # self.uploads()
-        # self.upload_videos_text.clear()
-
-
-
-    # def upload_faces(self):
-    #     # ROOT_DIR = os.path.realpath(os.path.join(os.path.dirname(__file__), '..'))
-    #     path = os.path.join(self.ROOT_DIR, 'uploads', self.folder_name_txt.text())
-    #     try: os.mkdir(path)
-    #     except OSError: pass
-    #     img_paths, _ = QFileDialog.getOpenFileNames(None, "UPLOAD IMAGES", self.ROOT_DIR, "Images (*.png *.jpg *.jpeg)")
-    #     i = len(os.listdir(path))
-        
-    #     if img_paths:
-    #         for img_path in img_paths:
-    #             img = cv2.imread(img_path)
-    #             os.chdir(path)
-    #             fname = self.folder_name_txt.text()+"_"+str(i)+"."+str(img_path.split('.')[-1])
-    #             # dt = str(datetime.datetime.now().strftime("%Y%m%d%H%M%S"))
-    #             # fname = self.folder_name_txt.text()+"_"+dt+"."+str(img_path.split('.')[-1])
-    #             cv2.imwrite(fname, img)
-    #             i+=1
-    #             self.success_label.show()
-    #             self.success_label_btn.show()
-    #             self.uploads()
-    #     self.folder_name_txt.clear()
-
-    # def uploads(self):
-    #     '''
-    #     this method updates the list of uploaded images.
-    #     code is buggy!
-    #     '''
-    #     path = os.path.join(self.ROOT_DIR, 'uploads')
-    #     lbl = QtWidgets.QLabel(self.upload_images_page)
-    #     # uploads list
-    #     for i in os.listdir(path):
-    #         inner_dir_path = os.path.join(path, i)
-    #         if not os.path.isfile(inner_dir_path):
-    #             for img_path in os.listdir(inner_dir_path):
-    #                 lbl.setText(i+"\\"+img_path)
-    #                 self.uploads_vbl.addWidget(lbl)
-    
-    # def success_close(self, label, button):
-    #     label.hide()
-    #     button.hide()
 
 
 
@@ -757,7 +570,7 @@ class Ui_MainWindow(object):
         # sidebar buttons
         self.home_btn.setText(_translate("MainWindow", "HOME"))
         self.show_data_btn.setText(_translate("MainWindow", "SHOW DATA"))
-        self.recg_face_btn.setText(_translate("MainWindow", "RECOGNIZE FACE"))
+        self.recg_face_btn.setText(_translate("MainWindow", "RECOGNIZED FACES"))
         self.sett_panel_btn.setText(_translate("MainWindow", "SETTINGS PANEL"))
         self.add_camera_btn.setText(_translate("MainWindow", "ADD CAMERA"))
         self.upload_videos_btn.setText(_translate("MainWindow", "UPLOAD VIDEOS"))
@@ -767,7 +580,7 @@ class Ui_MainWindow(object):
         # content page label
         self.home_page_label.setText(_translate("MainWindow", "STREAM"))
         self.label_3.setText(_translate("MainWindow", "ADD DATA"))
-        self.label_4.setText(_translate("MainWindow", "RECOGNIZE FACE"))
+        self.label_4.setText(_translate("MainWindow", "SHOW RECOGNIZED FACES"))
         
         # settings panel page labels and buttons
         self.sett_panel_label.setText(_translate("MainWindow", "SETTINGS PANEL"))
@@ -776,11 +589,6 @@ class Ui_MainWindow(object):
         self.processors_label.setText(_translate("MainWindow", "CHOOSE PROCESSORS"))
         self.save_sett_btn.setText(_translate("MainWindow", "SAVE"))
 
-        # upload faces page labels and buttons
-        self.success_label.setText(_translate("MainWindow", "FACES UPLOADED SUCCESSFULLY"))
-        self.success_label_btn.setText(_translate("MainWindow", ""))
-        self.upload_images_page_btn.setText(_translate("MainWindow", "BROWSE IMAGES"))
-        self.folder_name_lbl.setText(_translate("MainWindow", "ADD FOLDER NAME"))
-        self.uploads_lbl.setText(_translate("MainWindow", "YOUR UPLOADS:"))
+
 
 

@@ -1,9 +1,13 @@
 import sys
-from PyQt5 import QtGui
-from PyQt5.QtWidgets import QMainWindow, QApplication, QMessageBox, QPushButton
+from PyQt5.QtGui import QKeyEvent, QImage, QPixmap
+from PyQt5.QtWidgets import QListWidgetItem, QFileDialog, QMainWindow, QApplication, QMessageBox, QPushButton, QShortcut
 from PyQt5.QtCore import pyqtSlot, Qt
+from threading import Thread
+from test import make_enc
+import shutil
+import os
 import numpy as np
-import cv2 as cv
+import cv2 as cv2
 from gui_ui import Ui_MainWindow
 from queue import Queue
 from videostream import VideoStream
@@ -16,14 +20,17 @@ class MainWindow(QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         self.ui.menu_btn.clicked[bool].connect(self.changeState)
-        self.ui.upload_videos_FL.addRow(QPushButton("BROWSE VIDEOS", clicked = lambda: self.upload_videos()))
         self.display_height = 590
         self.display_width = 733
         self.ui.stackedWidget.setCurrentIndex(0)
         self.ui.sidebar.hide()
 
+        self.ui.upload_images_FL.addRow(QPushButton("BROWSE IMAGES", clicked = lambda: self.upload_images()))
+        self.ui.upload_videos_FL.addRow(QPushButton("BROWSE VIDEOS", clicked = lambda: self.upload_videos()))
         self.ui.save_sett_btn.clicked.connect(self.save_settings)
 
+        self.update_list('images')
+        self.update_list('videos')
              
 
         self.queue = Queue(maxsize=1000)
@@ -53,9 +60,9 @@ class MainWindow(QMainWindow):
     def convert_cv_qt(self,rgb_frame):
         h, w, ch = rgb_frame.shape
         bytes_per_line = ch * w
-        convert_to_Qt_format = QtGui.QImage(rgb_frame.data, w, h, bytes_per_line, QtGui.QImage.Format_RGB888)
+        convert_to_Qt_format = QImage(rgb_frame.data, w, h, bytes_per_line, QImage.Format_RGB888)
         p = convert_to_Qt_format.scaled(self.display_width, self.display_height, Qt.KeepAspectRatio)
-        return QtGui.QPixmap.fromImage(p)
+        return QPixmap.fromImage(p)
 
     def get_detection_model(self):
         return self.ui.detection_model_index[self.ui.detection_model_CB.currentIndex()]
@@ -64,13 +71,28 @@ class MainWindow(QMainWindow):
         self.video_thread.stop()
 
 
+    def upload_images(self):
+        # ROOT_DIR = os.path.realpath(os.path.join(os.path.dirname(__file__), '..'))
+        path = os.path.join(os.path.dirname(__file__), 'uploaded_images', self.ui.upload_images_text.text())
+        try: os.mkdir(path)
+        except OSError: pass
+        img_paths, _ = QFileDialog.getOpenFileNames(None, "UPLOAD IMAGES", os.path.dirname(__file__), "Images (*.png *.jpg *.jpeg)")
+        i = len(os.listdir(path))
+        if img_paths:
+            for img_path in img_paths:
+                img = cv2.imread(img_path)
+                os.chdir(path)
+                fname = self.ui.upload_images_text.text()+"_"+str(i)+"."+str(img_path.split('.')[-1])
+                cv2.imwrite(fname, img)
+                i+=1
+            
+            QMessageBox.information(self.ui.upload_images_page, 'Success', 'Images uploaded successfully!')
+            self.ui.upload_images_text.clear()
+            self.update_list(page='images')
+
+
     def upload_videos(self):
         
-        from PyQt5.QtWidgets import QFileDialog
-        from threading import Thread
-        from test import make_enc
-        import shutil
-        import os
 
         self.recog_thread.stop()
         path = os.path.join(os.path.dirname(__file__), 'uploaded_videos', self.ui.upload_videos_text.text())
@@ -81,18 +103,14 @@ class MainWindow(QMainWindow):
         i = len(os.listdir(path))
 
         if vid_paths:
-            # face_models = [FaceRecogTemp(model_name=model_name) for model_name in FaceRecogTemp.models if model_name!="Facenet"]
-            # face_detector = MediaPipeWrapper()
             for vid_path in vid_paths:
                 fname = self.ui.upload_videos_text.text()+"_"+str(i)+"."+str(vid_path.split('.')[-1])
-                path += '/' + fname
+                path = os.path.join(path, fname)
                 # print(path)
                 # print(vid_path)
-                if not os.path.isdir(path):
-                    os.makedirs(path)
                 shutil.copy(vid_path, path)
-                name = path+"/"+vid_path.split("/")[-1]
-                t1 = Thread(target=make_enc,args=(name,))
+                # print(path)
+                t1 = Thread(target=make_enc,args=(path,))
                 t1.start()
                 t1.join()
                 #make_enc(path+"/"+vid_path.split("/")[-1])
@@ -134,6 +152,8 @@ class MainWindow(QMainWindow):
             )
             self.recog_thread.start()
             QMessageBox.information(self.ui.upload_videos_page, 'Success', 'Videos uploaded successfully!')
+            self.ui.upload_videos_text.clear()
+            self.update_list(page='videos')
 
     def save_settings(self):
         print(self.ui.detection_model_CB.currentText().lower())
@@ -141,6 +161,25 @@ class MainWindow(QMainWindow):
         print(self.ui.processors_CB.currentText())
 
     # -----don't change this-----
+    def update_list(self, page):
+        if page == 'images':
+            path = os.path.join(os.path.dirname(__file__), 'uploaded_images')
+            self.ui.images_list_widget.clear()
+        else:
+            path = os.path.join(os.path.dirname(__file__), 'uploaded_videos')
+            self.ui.videos_list_widget.clear()
+
+        for i in os.listdir(path):
+            inner_dir_path = os.path.join(path, i)
+            if not os.path.isfile(inner_dir_path):
+                for ele_path in os.listdir(inner_dir_path):
+                    if page == 'images': QListWidgetItem(path+'\\'+i+'\\'+ele_path, self.ui.images_list_widget)
+                    else: QListWidgetItem(path+'\\'+i+'\\'+ele_path, self.ui.videos_list_widget)
+    def keyPressEvent(self, e: QKeyEvent):
+        if self.ui.upload_videos_text.hasFocus() and e.key() in (Qt.Key_Enter, Qt.Key_Return):
+            self.upload_videos()
+        if self.ui.upload_images_text.hasFocus() and e.key() in (Qt.Key_Enter, Qt.Key_Return):
+            self.upload_images()
     def toggleShadow(self, btn, shadow_obj):
         if btn.isChecked():
             shadow_obj.setEnabled(True)
