@@ -27,14 +27,15 @@ class MainWindow(QMainWindow):
 
         self.ui.upload_images_FL.addRow(QPushButton("BROWSE IMAGES", clicked = lambda: self.upload_images()))
         self.ui.upload_videos_FL.addRow(QPushButton("BROWSE VIDEOS", clicked = lambda: self.upload_videos()))
+        self.ui.add_camera_FL.addRow(QPushButton("ADD CAMERA", clicked = lambda: self.add_camera()))
         self.ui.save_sett_btn.clicked.connect(self.save_settings)
 
         self.update_list('images')
         self.update_list('videos')
              
-        self.queue = Queue(maxsize=1000)
-        self.start_video_thread()
-        self.start_recog_thread()
+        # self.queue = Queue(maxsize=1000)
+        # self.start_video_thread()
+        # self.start_recog_thread()
   
  
     def start_video_thread(self):
@@ -164,6 +165,15 @@ class MainWindow(QMainWindow):
         self.ui.upload_videos_text.clear()
         self.update_list(page='videos')
 
+    def add_camera(self):
+        #do something
+
+
+
+        # success msg
+        QMessageBox.information(self.ui.add_camera_page, 'Success', 'Camera added successfully!')
+        self.ui.add_camera_text.clear()
+
 
     # -----don't change this-----
     def update_list(self, page):
@@ -187,6 +197,8 @@ class MainWindow(QMainWindow):
             self.upload_videos()
         if self.ui.upload_images_text.hasFocus() and e.key() in (Qt.Key_Enter, Qt.Key_Return):
             self.upload_images()
+        if self.ui.add_camera_text.hasFocus() and e.key() in (Qt.Key_Enter, Qt.Key_Return):
+            self.add_camera()
     def toggleShadow(self, btn, shadow_obj):
         if btn.isChecked():
             shadow_obj.setEnabled(True)
@@ -220,19 +232,19 @@ class MainWindow(QMainWindow):
         self.toggleShadow(self.ui.upload_images_btn, self.ui.upload_images_btn_shadow)
     # -------------------------
     
-    def closeEvent(self, event):
+    # def closeEvent(self, event):
         
-        reply = QMessageBox.question(self, 'Message',
-            "It may take a while, are you sure to quit?", QMessageBox.Yes, QMessageBox.No)
+    #     reply = QMessageBox.question(self, 'Message',
+    #         "It may take a while, are you sure to quit?", QMessageBox.Yes, QMessageBox.No)
 
-        if reply == QMessageBox.Yes:
-            self.video_thread.requestInterruption()
-            self.recog_thread.requestInterruption()
-            self.video_thread.wait()
-            self.recog_thread.wait()
-            event.accept()
-        else:
-            event.ignore()
+    #     if reply == QMessageBox.Yes:
+    #         self.video_thread.requestInterruption()
+    #         self.recog_thread.requestInterruption()
+    #         self.video_thread.wait()
+    #         self.recog_thread.wait()
+    #         event.accept()
+    #     else:
+    #         event.ignore()
 
 
 if __name__ == "__main__":
