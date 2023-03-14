@@ -104,7 +104,7 @@
     margin-right: 5px;
 }
 
-#upload_images_page QPushButton, #upload_videos_page QPushButton {
+#upload_images_page QPushButton, #upload_videos_page QPushButton, #add_camera_page QPushButton {
     background-color: #00043d;
     color: #fff;
     border-radius: 3px;

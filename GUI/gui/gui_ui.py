@@ -453,8 +453,10 @@ class Ui_MainWindow(object):
         self.add_camera_FL = QtWidgets.QFormLayout()
         self.add_camera_lbl = QtWidgets.QLabel("ADD CAMERA LINK:")
         self.add_camera_lbl.setObjectName('add_camera_lbl')
+        self.add_camera_text = QtWidgets.QLineEdit()
+        self.add_camera_text.setPlaceholderText('ADD IP OF CAMERA')
 
-        self.add_camera_FL.addRow(self.add_camera_lbl, QtWidgets.QLineEdit())
+        self.add_camera_FL.addRow(self.add_camera_lbl, self.add_camera_text)
 
         self.add_camera_page.setLayout(self.add_camera_FL)
 
@@ -466,11 +468,11 @@ class Ui_MainWindow(object):
 
         # --------------------upload videos page start--------------------
 
-        # test video page
+        # upload videos page
         self.upload_videos_page = QtWidgets.QWidget()
         self.upload_videos_page.setObjectName("upload_videos_page")
 
-        # test video form
+        # upload videos form
         self.upload_videos_FL = QtWidgets.QFormLayout()
         self.upload_videos_lbl = QtWidgets.QLabel("ADD FOLDER NAME:")
         self.upload_videos_lbl.setObjectName('upload_videos_lbl')
@@ -483,14 +485,14 @@ class Ui_MainWindow(object):
         self.videos_list_widget = QtWidgets.QListWidget()
 
 
-        # test video page layout
+        # upload videos page layout
         self.upload_videos_vbl = QtWidgets.QVBoxLayout()
         self.upload_videos_vbl.addLayout(self.upload_videos_FL)
         self.upload_videos_vbl.addWidget(self.videos_list_widget)
 
         self.upload_videos_page.setLayout(self.upload_videos_vbl)
 
-        # test video page in stacked widget
+        # upload videos page in stacked widget
         self.stackedWidget.addWidget(self.upload_videos_page)
         
         # --------------------upload videos page end--------------------
