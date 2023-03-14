@@ -77,7 +77,7 @@ class FaceRecognition(QThread):
                 
                 res = self.model.predicts([emb for emb in emb_v if emb!=[]])
                 self.buffer_seen(res,f_time)
-
+            
                 del frame
                 del bboxes
 
@@ -85,30 +85,24 @@ class FaceRecognition(QThread):
             print("recognition stop")
 
         finally:
+            self.stop(empty_q=True)
+
+    def stop(self, empty_q: bool = True):
+     
+        if empty_q:
+            print("yes")
             while not self.queue.empty():
+                
                 frame, bboxes, f_time = self.queue.get()
                 emb_v = self.model.create_encodings(frame, bboxes)
                 res = self.model.predicts([emb for emb in emb_v if emb!=[]])
-                
                 self.buffer_seen(res,f_time)
-                    
+
                 del frame
                 del bboxes
 
             self.writeCSV()
             self.close_file()
 
-    def stop(self):
-
-        while not self.queue.empty():
-            frame, bboxes, f_time = self.queue.get()
-            emb_v = self.model.create_encodings(frame, bboxes)
-            res = self.model.predicts([emb for emb in emb_v if emb!=[]])
-            self.buffer_seen(res,f_time)
-
-            del frame
-            del bboxes
-
-        self.writeCSV()
-        self.close_file()
         self._run_flag = False
+        

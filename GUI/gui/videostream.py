@@ -41,9 +41,13 @@ class VideoStream(QThread):
 
     def run(self):
         self.face_detector = self.FaceDetection()
-        self.capture = cv.VideoCapture(
-            f"rtsp://{self.username}:{self.password}@{self.IP}:554/stream1"
-        )
+        try:
+            self.capture = cv.VideoCapture(
+                f"rtsp://{self.username}:{self.password}@{self.IP}:554/stream1"
+            )
+        except:
+            self.stop()
+            
         # self.capture = cv.VideoCapture(0)
         fps = self.capture.get(cv.CAP_PROP_FPS)
         if fps==0:
@@ -107,7 +111,7 @@ class VideoStream(QThread):
                         }
                     )
 
-            self.stream_signal.emit(frame)
+            self.stream_signal.emit(frame.copy())
             curr_qsize = self.MPqueue.qsize()
             
             if curr_qsize-50*(recognize_dropping-1) >=50:
@@ -117,14 +121,19 @@ class VideoStream(QThread):
 
             if faces and frame_no%recognize_dropping==0:
                 
-                # print(f"qsize: {curr_qsize}, dropping:{recognize_dropping}")
+                print(f"qsize: {curr_qsize}, dropping:{recognize_dropping}")
                 self.MPqueue.put(
                     (frame.copy(), bboxes.copy(), curr_time.strftime("%H:%M:%S"))
                 )
             del frame
             del bboxes
+        self.stop()
 
     def stop(self):
         self.capture.release()
         self._run_flag = False
-        self.wait()
+        
+        
+        
+        
+        

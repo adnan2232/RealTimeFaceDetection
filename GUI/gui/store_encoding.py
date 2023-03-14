@@ -4,7 +4,7 @@ import cv2 as cv
 
 
 
-def make_enc(vid_path):
+def make_enc(vid_path,name):
     fd =  MediaPipeWrapper()
     models = [FaceRecogTemp(model_name) for model_name in FaceRecogTemp.models]
     cap = cv.VideoCapture(vid_path)
@@ -24,7 +24,7 @@ def make_enc(vid_path):
             for model in models:
                
                 model.create_save_encoding(
-                    "adnan",
+                    name,
                     cv.cvtColor(frame,cv.COLOR_BGR2RGB),
                     bbox[0][0],bbox[0][1],
                     bbox[1][0],bbox[1][1],

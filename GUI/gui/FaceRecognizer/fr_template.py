@@ -29,7 +29,6 @@ class FaceRecogTemp:
         self.encodings = self.fetch_encoding()
         self.thresholds = FaceRecogTemp.thresholds_global[model_name]
         self.fit_knn()
-        
 
   
     def fetch_encoding(self) -> list[dict]:
