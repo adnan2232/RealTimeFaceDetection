@@ -45,89 +45,91 @@ class VideoStream(QThread):
             self.capture = cv.VideoCapture(
                 f"rtsp://{self.username}:{self.password}@{self.IP}:554/stream1"
             )
-        except:
-            self.stop()
+      
             
-        # self.capture = cv.VideoCapture(0)
-        fps = self.capture.get(cv.CAP_PROP_FPS)
-        if fps==0:
-            fps = 15
- 
-        detect_time = deque(maxlen=10)
-
-        detector_dropping = 1 
-        recognize_dropping=fps
+            # self.capture = cv.VideoCapture(0)
+            fps = self.capture.get(cv.CAP_PROP_FPS)
+            if fps==0:
+                fps = 15
     
-       
-        frame_no = 0
-        faces = None
-        while not self.isInterruptionRequested():
-            isframe, frame = self.capture.read()
+            detect_time = deque(maxlen=10)
 
-            if not isframe:
-                continue
-            curr_time = datetime.now()
+            detector_dropping = 1 
+            recognize_dropping=1
+        
+        
+            frame_no = 0
+            faces = None
+            while not self.isInterruptionRequested():
+                isframe, frame = self.capture.read()
 
-            frame_no += 1
-            if frame_no%fps==0:
-                frame_no = 0
+                if not isframe:
+                    continue
+                curr_time = datetime.now()
 
-            img_row, img_col = frame.shape[0], frame.shape[1]
-            frame = self.frame_equlization_BGR_RGB(frame)
+                frame_no += 1
+                if frame_no%fps==0:
+                    frame_no = 0
 
-            if frame_no % detector_dropping == 0:
-                start_time = monotonic()
-                faces = self.face_detector.capture_faces(frame)
-                end_time = monotonic()
-                detect_time.append((end_time-start_time)*fps)
+                img_row, img_col = frame.shape[0], frame.shape[1]
+                frame = self.frame_equlization_BGR_RGB(frame)
 
-            med = np.median(detect_time)
-           
-            if len(detect_time)>5 and not np.isnan(med) and ceil(med)> detector_dropping:
-                print(detect_time)
-                detector_dropping = ceil(med)
-                detect_time.clear()
-                print(detector_dropping)
-            elif len(detect_time)>5 and not np.isnan(med) and detector_dropping-ceil(med) >1:
-                print(detect_time)
-                detector_dropping = max(1,ceil(med))
-                print(detector_dropping)
+                if frame_no % detector_dropping == 0:
+                    start_time = monotonic()
+                    faces = self.face_detector.capture_faces(frame)
+                    end_time = monotonic()
+                    detect_time.append((end_time-start_time)*fps)
 
-            bboxes = []
-            if faces:
-                for face in faces:
-                    (x, y), (w, h), (left_eye, right_eye) = self.face_detector.get_bbox(
-                        face, img_row, img_col
-                    )
-                    cv.rectangle(frame, (x, y), (w, h), color=(0, 255, 0), thickness=2)
-                    bboxes.append(
-                        {
-                            "x": x,
-                            "y": y,
-                            "w": w,
-                            "h": h,
-                            "left_eye": left_eye,
-                            "right_eye": right_eye,
-                        }
-                    )
-
-            self.stream_signal.emit(frame.copy())
-            curr_qsize = self.MPqueue.qsize()
+                med = np.median(detect_time)
             
-            if curr_qsize-50*(recognize_dropping-1) >=50:
-                recognize_dropping = min(10,recognize_dropping+1)
-            elif 50*recognize_dropping-curr_qsize >= 50:
-                recognize_dropping = max(1,recognize_dropping-1)
+                if len(detect_time)>5 and not np.isnan(med) and ceil(med)> detector_dropping:
+                    print(detect_time)
+                    detector_dropping = min(fps,ceil(med))
+                    detect_time.clear()
+                    print(detector_dropping)
+                elif len(detect_time)>5 and not np.isnan(med) and detector_dropping-ceil(med) >1:
+                    print(detect_time)
+                    detector_dropping = max(1,ceil(med))
+                    print(detector_dropping)
 
-            if faces and frame_no%recognize_dropping==0:
+                bboxes = []
+                if faces:
+                    for face in faces:
+                        (x, y), (w, h), (left_eye, right_eye) = self.face_detector.get_bbox(
+                            face, img_row, img_col
+                        )
+                        cv.rectangle(frame, (x, y), (w, h), color=(0, 255, 0), thickness=2)
+                        bboxes.append(
+                            {
+                                "x": x,
+                                "y": y,
+                                "w": w,
+                                "h": h,
+                                "left_eye": left_eye,
+                                "right_eye": right_eye,
+                            }
+                        )
+
+                self.stream_signal.emit(frame.copy())
+                curr_qsize = self.MPqueue.qsize()
                 
-                print(f"qsize: {curr_qsize}, dropping:{recognize_dropping}")
-                self.MPqueue.put(
-                    (frame.copy(), bboxes.copy(), curr_time.strftime("%H:%M:%S"))
-                )
-            del frame
-            del bboxes
-        self.stop()
+                if curr_qsize-50*(recognize_dropping-1) >=50:
+                    recognize_dropping = min(10,recognize_dropping+1)
+                elif 50*recognize_dropping-curr_qsize >= 50:
+                    recognize_dropping = max(1,recognize_dropping-1)
+
+                if faces and frame_no%recognize_dropping==0:
+                    
+                    #print(f"qsize: {curr_qsize}, dropping:{recognize_dropping}")
+                    self.MPqueue.put(
+                        (frame.copy(), bboxes.copy(), curr_time.strftime("%H:%M:%S"))
+                    )
+                del frame
+                del bboxes
+        except:
+            pass
+        finally:
+            self.stop()
 
     def stop(self):
         self.capture.release()

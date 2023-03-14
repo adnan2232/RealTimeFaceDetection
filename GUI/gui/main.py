@@ -3,7 +3,7 @@ from PyQt5.QtGui import QKeyEvent, QImage, QPixmap
 from PyQt5.QtWidgets import QListWidgetItem, QFileDialog, QMainWindow, QApplication, QMessageBox, QPushButton, QShortcut
 from PyQt5.QtCore import pyqtSlot, Qt
 from threading import Thread
-from store_encoding import make_enc
+from store_encoding import store_video_enc,store_image_enc
 import shutil
 import os
 import numpy as np
@@ -43,7 +43,7 @@ class MainWindow(QMainWindow):
             queue = self.queue,
             username="aa2232786",
             password="aa2232786",
-            IP="192.168.1.102",
+            IP="192.168.1.105",
             detection_model = self.detection_model_name
         ) 
         self.video_thread.stream_signal.connect(self.update_frame)
@@ -104,6 +104,8 @@ class MainWindow(QMainWindow):
             self.change_recog_model()
 
     def upload_images(self):
+        if self.recog_thread.isRunning():
+            self.stop_recog_thread(False)
         # ROOT_DIR = os.path.realpath(os.path.join(os.path.dirname(__file__), '..'))
         path = os.path.join(os.path.dirname(__file__), 'uploaded_images', self.ui.upload_images_text.text())
         try: os.mkdir(path)
@@ -111,16 +113,23 @@ class MainWindow(QMainWindow):
         img_paths, _ = QFileDialog.getOpenFileNames(None, "UPLOAD IMAGES", os.path.dirname(__file__), "Images (*.png *.jpg *.jpeg)")
         i = len(os.listdir(path))
         if img_paths:
+            fnames = []
             for img_path in img_paths:
                 img = cv2.imread(img_path)
-                os.chdir(path)
+                
                 fname = self.ui.upload_images_text.text()+"_"+str(i)+"."+str(img_path.split('.')[-1])
-                cv2.imwrite(fname, img)
+                fnames.append(os.path.join(path,fname))
+                cv2.imwrite(fnames[-1], img)
                 i+=1
             
-            QMessageBox.information(self.ui.upload_images_page, 'Success', 'Images uploaded successfully!')
-            self.ui.upload_images_text.clear()
-            self.update_list(page='images')
+            t1 = Thread(target=store_image_enc,args=(fnames,self.ui.upload_images_text.text()))
+            t1.start()
+            t1.join()
+
+        self.start_recog_thread()
+        QMessageBox.information(self.ui.upload_images_page, 'Success', 'Images uploaded successfully!')
+        self.ui.upload_images_text.clear()
+        self.update_list(page='images')
 
 
     def upload_videos(self):
@@ -144,16 +153,16 @@ class MainWindow(QMainWindow):
                 # print(vid_path)
                 shutil.copy(vid_path, path)
                 # print(path)
-                t1 = Thread(target=make_enc,args=(path,name))
+                t1 = Thread(target=store_video_enc,args=(path,name))
                 t1.start()
                 t1.join()
                 
 
-            self.start_recog_thread()
+        self.start_recog_thread()
           
-            QMessageBox.information(self.ui.upload_videos_page, 'Success', 'Videos uploaded successfully!')
-            self.ui.upload_videos_text.clear()
-            self.update_list(page='videos')
+        QMessageBox.information(self.ui.upload_videos_page, 'Success', 'Videos uploaded successfully!')
+        self.ui.upload_videos_text.clear()
+        self.update_list(page='videos')
 
 
     # -----don't change this-----

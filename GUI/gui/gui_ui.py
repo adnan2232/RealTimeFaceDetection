@@ -368,7 +368,7 @@ class Ui_MainWindow(object):
         recog_items = ['Facenet','Facenet512', 'ArcFace']
         self.recognition_model_index = {i:x for i,x in enumerate(recog_items)}
         self.recognition_model_CB.addItems(recog_items)
-        self.recognition_model_CB.setCurrentIndex(1)
+        self.recognition_model_CB.setCurrentIndex(0)
         # horizontal spacer between recognition model label and recognition model combobox
         spacerItem7 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         # recognition model cell in horizontal layout
