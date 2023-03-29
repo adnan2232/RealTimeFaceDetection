@@ -12,7 +12,7 @@ class FaceRecogTemp:
 
     models = ["Facenet", "Facenet512", "ArcFace"]
     thresholds_global = {
-        "Facenet": {"cosine": 0.40, "l2": 10, "l2_norm": 0.60},
+        "Facenet": {"cosine": 0.40, "l2": 10, "l2_norm": 0.70},
         "Facenet512": {"cosine": 0.30, "l2": 23.56, "l2_norm": 0.80},
         "ArcFace": {"cosine": 0.68, "l2": 4.15, "l2_norm": 1.0},
         

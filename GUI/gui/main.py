@@ -33,9 +33,9 @@ class MainWindow(QMainWindow):
         self.update_list('images')
         self.update_list('videos')
              
-        # self.queue = Queue(maxsize=1000)
-        # self.start_video_thread()
-        # self.start_recog_thread()
+        self.queue = Queue(maxsize=1000)
+        self.start_video_thread()
+        self.start_recog_thread()
   
  
     def start_video_thread(self):
@@ -44,7 +44,7 @@ class MainWindow(QMainWindow):
             queue = self.queue,
             username="aa2232786",
             password="aa2232786",
-            IP="192.168.1.105",
+            IP="192.168.1.103",
             detection_model = self.detection_model_name
         ) 
         self.video_thread.stream_signal.connect(self.update_frame)
@@ -232,19 +232,19 @@ class MainWindow(QMainWindow):
         self.toggleShadow(self.ui.upload_images_btn, self.ui.upload_images_btn_shadow)
     # -------------------------
     
-    # def closeEvent(self, event):
+    def closeEvent(self, event):
         
-    #     reply = QMessageBox.question(self, 'Message',
-    #         "It may take a while, are you sure to quit?", QMessageBox.Yes, QMessageBox.No)
+        reply = QMessageBox.question(self, 'Message',
+            "It may take a while, are you sure to quit?", QMessageBox.Yes, QMessageBox.No)
 
-    #     if reply == QMessageBox.Yes:
-    #         self.video_thread.requestInterruption()
-    #         self.recog_thread.requestInterruption()
-    #         self.video_thread.wait()
-    #         self.recog_thread.wait()
-    #         event.accept()
-    #     else:
-    #         event.ignore()
+        if reply == QMessageBox.Yes:
+            self.video_thread.requestInterruption()
+            self.recog_thread.requestInterruption()
+            self.video_thread.wait()
+            self.recog_thread.wait()
+            event.accept()
+        else:
+            event.ignore()
 
 
 if __name__ == "__main__":
