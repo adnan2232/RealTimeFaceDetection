@@ -12,6 +12,7 @@ from gui_ui import Ui_MainWindow
 from queue import Queue
 from videostream import VideoStream
 from facerecognition import FaceRecognition
+from tinydb import TinyDB, Query
 
 
 class MainWindow(QMainWindow):
@@ -30,21 +31,55 @@ class MainWindow(QMainWindow):
         self.ui.add_camera_FL.addRow(QPushButton("ADD CAMERA", clicked = lambda: self.add_camera()))
         self.ui.save_sett_btn.clicked.connect(self.save_settings)
 
+        self.stateInfoDB = TinyDB('stateInfo.json')
+        self.stateInfo = self.initialize_state()
         self.update_list('images')
         self.update_list('videos')
              
         self.queue = Queue(maxsize=1000)
+        self.start_camera()
+    
+    def initialize_state(self):
+     
+        state = self.stateInfoDB.all()
+        if not state:
+            state = {
+                'detector':'mediapipe',
+                'recognizer':'Facenet',
+                'camera_info':'rtsp://aa2232786:aa2232786@192.168.1.103:554/stream1'
+            }
+            self.stateInfoDB.insert(state)
+        else:
+            print(state)
+            state = state[0]
+        
+        self.set_detection_model(state['detector'])
+        self.set_recog_model(state['recognizer'])
+        self.set_camera_info(state['camera_info'])
+        return state
+    
+    def set_detection_model(self,model_name):
+        self.ui.detection_model_CB.setCurrentIndex(
+            self.ui.detection_model_to_index[model_name]
+        )
+
+    def set_recog_model(self,model_name):
+        self.ui.recognition_model_CB.setCurrentIndex(
+            self.ui.recognition_model_to_index[model_name]
+        )
+
+    def set_camera_info(self,camera_link):
+        self.cameraInfo = camera_link
+
+    def start_camera(self):
         self.start_video_thread()
         self.start_recog_thread()
-  
- 
+
     def start_video_thread(self):
         self.detection_model_name = self.get_detection_model()
         self.video_thread =VideoStream(
             queue = self.queue,
-            username="aa2232786",
-            password="aa2232786",
-            IP="192.168.1.103",
+            camera_info=self.stateInfo['camera_info'],
             detection_model = self.detection_model_name
         ) 
         self.video_thread.stream_signal.connect(self.update_frame)
@@ -79,6 +114,10 @@ class MainWindow(QMainWindow):
     def get_recog_model(self):
         return self.ui.recognition_model_index[self.ui.recognition_model_CB.currentIndex()]
 
+    def stop_camera(self):
+        self.stop_video_thread()
+        self.stop_recog_thread(False)
+
     def stop_video_thread(self):
         
         self.video_thread.requestInterruption()
@@ -95,8 +134,8 @@ class MainWindow(QMainWindow):
 
     def change_recog_model(self):
         self.recog_model_name =self.get_recog_model()
-        self.stop_recog_thread(False)
-        self.start_recog_thread()
+        self.stop_video_thread()
+        self.start_recog_thread(True)
 
     def save_settings(self):
         if self.detection_model_name != self.get_detection_model():
@@ -167,8 +206,9 @@ class MainWindow(QMainWindow):
 
     def add_camera(self):
         #do something
-
-
+        self.stop_camera()  
+        self.ui.add_camera_text.text()
+        print(self.ui.add_camera_text.text())
 
         # success msg
         QMessageBox.information(self.ui.add_camera_page, 'Success', 'Camera added successfully!')

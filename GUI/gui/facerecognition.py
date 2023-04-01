@@ -105,4 +105,5 @@ class FaceRecognition(QThread):
             self.close_file()
 
         self._run_flag = False
+     
         

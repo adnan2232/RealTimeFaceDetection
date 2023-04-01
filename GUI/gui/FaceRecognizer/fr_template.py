@@ -33,7 +33,7 @@ class FaceRecogTemp:
   
     def fetch_encoding(self) -> list[dict]:
         
-        return TinyDB(f"{self.model_name}.db").all()
+        return TinyDB(f"{self.model_name}.json").all()
 
     def create_encoding(
         self,
@@ -75,7 +75,7 @@ class FaceRecogTemp:
         return res
 
     def save_encoding(self, name: str, encoding: Union[list, np.array]) -> None:
-        TinyDB(f"{self.model_name}.db").insert({"name": name, "encoding": encoding})
+        TinyDB(f"{self.model_name}.json").insert({"name": name, "encoding": encoding})
     
 
     def create_save_encoding(
@@ -98,7 +98,7 @@ class FaceRecogTemp:
 
     def delete_encoding(self, name: str) -> None:
        
-        TinyDB(f"{self.model_name}.db").remove(Query().name == name)
+        TinyDB(f"{self.model_name}.json").remove(Query().name == name)
     
         
 

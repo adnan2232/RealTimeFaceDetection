@@ -16,9 +16,7 @@ class VideoStream(QThread):
     def __init__(self, *arg, **kwargs) -> None:
         self.face_detector_model = kwargs["detection_model"]
         super(VideoStream, self).__init__()
-        self.IP = kwargs["IP"]
-        self.username = kwargs["username"]
-        self.password = kwargs["password"]
+        self.camera_info = kwargs["camera_info"]
         self.MPqueue = kwargs["queue"]
         self._run_flag = True
         self.clah = cv.createCLAHE(clipLimit=3.0,tileGridSize=(7,7))
@@ -42,9 +40,7 @@ class VideoStream(QThread):
     def run(self):
         self.face_detector = self.FaceDetection()
         try:
-            self.capture = cv.VideoCapture(
-                f"rtsp://{self.username}:{self.password}@{self.IP}:554/stream1"
-            )
+            self.capture = cv.VideoCapture(self.camera_info)
       
             
             # self.capture = cv.VideoCapture(0)
@@ -134,6 +130,7 @@ class VideoStream(QThread):
     def stop(self):
         self.capture.release()
         self._run_flag = False
+       
         
         
         
