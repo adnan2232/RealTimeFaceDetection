@@ -120,4 +120,12 @@
 
 /* upload images and upload videos page css end */
 
+/*  */
+
+#show_data_page QWidget {
+    border: 1px solid black;
+}
+
+/*  */
+
 /* content page css end */

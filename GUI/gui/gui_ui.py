@@ -272,40 +272,183 @@ class Ui_MainWindow(object):
 
 
 
+        # --------------------upload images page start--------------------
+
+        # upload images page
+        self.upload_images_page = QtWidgets.QWidget()
+        self.upload_images_page.setObjectName("upload_images_page")
+
+        # upload images form
+        self.upload_images_FL = QtWidgets.QFormLayout()
+        self.upload_images_lbl = QtWidgets.QLabel("ADD FOLDER NAME:")
+        self.upload_images_lbl.setObjectName('upload_images_lbl')
+        self.upload_images_text = QtWidgets.QLineEdit()
+
+        # adding rows to form layout
+        self.upload_images_FL.addRow(self.upload_images_lbl, self.upload_images_text)
+                
+        # 
+        self.images_list_widget = QtWidgets.QListWidget()
+
+
+        # upload images page layout
+        self.upload_images_vbl = QtWidgets.QVBoxLayout()
+        self.upload_images_vbl.addLayout(self.upload_images_FL)
+        self.upload_images_vbl.addWidget(self.images_list_widget)
+
+        self.upload_images_page.setLayout(self.upload_images_vbl)
+
+        # upload images page in stacked widget
+        self.stackedWidget.addWidget(self.upload_images_page)
+
+
+        
+        # --------------------upload images page end--------------------
+
+
+
+        # --------------------upload videos page start--------------------
+
+        # upload videos page
+        self.upload_videos_page = QtWidgets.QWidget()
+        self.upload_videos_page.setObjectName("upload_videos_page")
+
+        # upload videos form
+        self.upload_videos_FL = QtWidgets.QFormLayout()
+        self.upload_videos_lbl = QtWidgets.QLabel("ADD FOLDER NAME:")
+        self.upload_videos_lbl.setObjectName('upload_videos_lbl')
+        self.upload_videos_text = QtWidgets.QLineEdit()
+
+        # adding rows to form layout
+        self.upload_videos_FL.addRow(self.upload_videos_lbl, self.upload_videos_text)
+                
+        # 
+        self.videos_list_widget = QtWidgets.QListWidget()
+
+
+        # upload videos page layout
+        self.upload_videos_vbl = QtWidgets.QVBoxLayout()
+        self.upload_videos_vbl.addLayout(self.upload_videos_FL)
+        self.upload_videos_vbl.addWidget(self.videos_list_widget)
+
+        self.upload_videos_page.setLayout(self.upload_videos_vbl)
+
+        # upload videos page in stacked widget
+        self.stackedWidget.addWidget(self.upload_videos_page)
+        
+        # --------------------upload videos page end--------------------
+
+
+
         # --------------------show data page start--------------------
 
         # add data page
         self.show_data_page = QtWidgets.QWidget()
         self.show_data_page.setObjectName("show_data_page")
-        self.gridLayout_3 = QtWidgets.QGridLayout(self.show_data_page)
-        self.gridLayout_3.setObjectName("gridLayout_3")
+
+        # 
+        self.show_data_page_GL = QtWidgets.QGridLayout(self.show_data_page)
+        self.show_data_page_GL.setObjectName("show_data_page_GL")
+
         # add data label
-        self.label_3 = QtWidgets.QLabel(self.show_data_page)
-        self.label_3.setAlignment(QtCore.Qt.AlignCenter)
-        self.label_3.setObjectName("label_3")
-        self.gridLayout_3.addWidget(self.label_3, 0, 0, 1, 1)
+        # self.label_3 = QtWidgets.QLabel(self.show_data_page)
+        # self.label_3.setAlignment(QtCore.Qt.AlignCenter)
+        # self.label_3.setObjectName("label_3")
+
+        # 
+        self.images_LW = QtWidgets.QListWidget()
+        self.videos_LW = QtWidgets.QListWidget()
+
+        # profile section
+        self.profile_sec = QtWidgets.QWidget()
+        # self.profile_sec.setFixedSize(500, 500)
+
+        # 4 spacers
+        # PS = profile section, T = top, L = left, R = right, B = bottom, S = spacer
+        PSTS = QtWidgets.QSpacerItem(20, 20, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        PSLS = QtWidgets.QSpacerItem(20, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        PSRS = QtWidgets.QSpacerItem(20, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        PSBS = QtWidgets.QSpacerItem(20, 20, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+
+        # 
+        self.image_lbl = QtWidgets.QLabel(self.profile_sec)
+        self.image_lbl.setScaledContents(True)
+        self.image_lbl.setFixedSize(200, 300)
+        self.name = QtWidgets.QLabel(self.profile_sec)
+        self.enc_time = QtWidgets.QLabel(self.profile_sec)
+        self.del_btn = QtWidgets.QPushButton(self.profile_sec)
+
+        #
+        self.profWid = QtWidgets.QWidget()
+        self.profWid.setObjectName("profWid")
+
+        # 
+        self.profGL = QtWidgets.QGridLayout()
+        self.profGL.setObjectName("profGL")
+        self.profGL.addWidget(self.image_lbl, 0, 0, 3, 1)
+        self.profGL.addWidget(self.name, 0, 1, 1, 1)
+        self.profGL.addWidget(self.enc_time, 1, 1, 1, 1)
+        self.profGL.addWidget(self.del_btn, 2, 1, 1, 1)
+
+        self.profWid.setLayout(self.profGL)
+
+
+        # profile section gridlayout
+        self.profileSecGL = QtWidgets.QGridLayout(self.profile_sec)
+        self.profileSecGL.setObjectName("profileSecGL")
+        # self.profileSecGL.addWidget(self.sett_panel_label, 0, 1, 1, 2)
+        self.profileSecGL.addItem(PSTS, 0, 1, 1, 1)
+        self.profileSecGL.addItem(PSLS, 1, 0, 1, 1)
+        self.profileSecGL.addWidget(self.profWid, 1, 1, 1, 1)
+        self.profileSecGL.addItem(PSRS, 1, 2, 1, 1)
+        self.profileSecGL.addItem(PSBS, 2, 1, 1, 1)
+
+
+        # 
+        self.images_LW_lbl = QtWidgets.QLabel()
+        self.videos_LW_lbl = QtWidgets.QLabel()
+        self.profile_sec_lbl = QtWidgets.QLabel()
+
+
+        # 
+        self.show_data_page_GL.addWidget(self.images_LW_lbl, 0, 0, 1, 1)
+        self.show_data_page_GL.addWidget(self.images_LW, 1, 0, 1, 1)
+        self.show_data_page_GL.addWidget(self.videos_LW_lbl, 0, 1, 1, 1)
+        self.show_data_page_GL.addWidget(self.videos_LW, 1, 1, 1, 1)
+        self.show_data_page_GL.addWidget(self.profile_sec_lbl, 2, 0, 1, 2)
+        self.show_data_page_GL.addWidget(self.profile_sec, 3, 0, 1, 2)
+
+        # self.profile_sec_lbl.hide()
+        # self.profile_sec.hide()
+
+        # 
         self.stackedWidget.addWidget(self.show_data_page)
 
 
         # --------------------show data page end--------------------
 
 
-        # --------------------recognize face page start--------------------
 
-        # recognize face page
-        self.recg_face_page = QtWidgets.QWidget()
-        self.recg_face_page.setObjectName("recg_face_page")
-        self.gridLayout_4 = QtWidgets.QGridLayout(self.recg_face_page)
-        self.gridLayout_4.setObjectName("gridLayout_4")
-        # recognize face label
-        self.label_4 = QtWidgets.QLabel(self.recg_face_page)
-        self.label_4.setAlignment(QtCore.Qt.AlignCenter)
-        self.label_4.setObjectName("label_4")
-        self.gridLayout_4.addWidget(self.label_4, 0, 0, 1, 1)
-        self.stackedWidget.addWidget(self.recg_face_page)
+        # --------------------add camera page start--------------------
 
+        # add camera page
+        self.add_camera_page = QtWidgets.QWidget()
+        self.add_camera_page.setObjectName("add_camera_page")
 
-        # --------------------recognize face page end--------------------
+        # add camera form
+        self.add_camera_FL = QtWidgets.QFormLayout()
+        self.add_camera_lbl = QtWidgets.QLabel("ADD CAMERA LINK:")
+        self.add_camera_lbl.setObjectName('add_camera_lbl')
+        self.add_camera_text = QtWidgets.QLineEdit()
+        self.add_camera_text.setPlaceholderText('ADD IP OF CAMERA')
+
+        self.add_camera_FL.addRow(self.add_camera_lbl, self.add_camera_text)
+
+        self.add_camera_page.setLayout(self.add_camera_FL)
+
+        self.stackedWidget.addWidget(self.add_camera_page)
+
+        # --------------------add camera page end--------------------
 
 
 
@@ -444,95 +587,22 @@ class Ui_MainWindow(object):
         # --------------------settings panel page end--------------------
 
 
+        # --------------------recognized faces page start--------------------
 
-        # --------------------add camera page start--------------------
-
-        # add camera page
-        self.add_camera_page = QtWidgets.QWidget()
-        self.add_camera_page.setObjectName("add_camera_page")
-
-        # add camera form
-        self.add_camera_FL = QtWidgets.QFormLayout()
-        self.add_camera_lbl = QtWidgets.QLabel("ADD CAMERA LINK:")
-        self.add_camera_lbl.setObjectName('add_camera_lbl')
-        self.add_camera_text = QtWidgets.QLineEdit()
-        self.add_camera_text.setPlaceholderText('ADD IP OF CAMERA')
-
-        self.add_camera_FL.addRow(self.add_camera_lbl, self.add_camera_text)
-
-        self.add_camera_page.setLayout(self.add_camera_FL)
-
-        self.stackedWidget.addWidget(self.add_camera_page)
-
-        # --------------------add camera page end--------------------
+        # recognize face page
+        self.recg_face_page = QtWidgets.QWidget()
+        self.recg_face_page.setObjectName("recg_face_page")
+        self.gridLayout_4 = QtWidgets.QGridLayout(self.recg_face_page)
+        self.gridLayout_4.setObjectName("gridLayout_4")
+        # recognize face label
+        self.label_4 = QtWidgets.QLabel(self.recg_face_page)
+        self.label_4.setAlignment(QtCore.Qt.AlignCenter)
+        self.label_4.setObjectName("label_4")
+        self.gridLayout_4.addWidget(self.label_4, 0, 0, 1, 1)
+        self.stackedWidget.addWidget(self.recg_face_page)
 
 
-
-        # --------------------upload videos page start--------------------
-
-        # upload videos page
-        self.upload_videos_page = QtWidgets.QWidget()
-        self.upload_videos_page.setObjectName("upload_videos_page")
-
-        # upload videos form
-        self.upload_videos_FL = QtWidgets.QFormLayout()
-        self.upload_videos_lbl = QtWidgets.QLabel("ADD FOLDER NAME:")
-        self.upload_videos_lbl.setObjectName('upload_videos_lbl')
-        self.upload_videos_text = QtWidgets.QLineEdit()
-
-        # adding rows to form layout
-        self.upload_videos_FL.addRow(self.upload_videos_lbl, self.upload_videos_text)
-                
-        # 
-        self.videos_list_widget = QtWidgets.QListWidget()
-
-
-        # upload videos page layout
-        self.upload_videos_vbl = QtWidgets.QVBoxLayout()
-        self.upload_videos_vbl.addLayout(self.upload_videos_FL)
-        self.upload_videos_vbl.addWidget(self.videos_list_widget)
-
-        self.upload_videos_page.setLayout(self.upload_videos_vbl)
-
-        # upload videos page in stacked widget
-        self.stackedWidget.addWidget(self.upload_videos_page)
-        
-        # --------------------upload videos page end--------------------
-
-
-
-        # --------------------upload images page start--------------------
-
-        # upload images page
-        self.upload_images_page = QtWidgets.QWidget()
-        self.upload_images_page.setObjectName("upload_images_page")
-
-        # upload images form
-        self.upload_images_FL = QtWidgets.QFormLayout()
-        self.upload_images_lbl = QtWidgets.QLabel("ADD FOLDER NAME:")
-        self.upload_images_lbl.setObjectName('upload_images_lbl')
-        self.upload_images_text = QtWidgets.QLineEdit()
-
-        # adding rows to form layout
-        self.upload_images_FL.addRow(self.upload_images_lbl, self.upload_images_text)
-                
-        # 
-        self.images_list_widget = QtWidgets.QListWidget()
-
-
-        # upload images page layout
-        self.upload_images_vbl = QtWidgets.QVBoxLayout()
-        self.upload_images_vbl.addLayout(self.upload_images_FL)
-        self.upload_images_vbl.addWidget(self.images_list_widget)
-
-        self.upload_images_page.setLayout(self.upload_images_vbl)
-
-        # upload images page in stacked widget
-        self.stackedWidget.addWidget(self.upload_images_page)
-
-
-        
-        # --------------------upload images page end--------------------
+        # --------------------recognized faces page end--------------------
 
         # grid layout of content page
         self.gridLayout_7 = QtWidgets.QGridLayout(self.content_page)
@@ -587,8 +657,16 @@ class Ui_MainWindow(object):
 
         # content page label
         self.home_page_label.setText(_translate("MainWindow", "STREAM"))
-        self.label_3.setText(_translate("MainWindow", "ADD DATA"))
+        # self.label_3.setText(_translate("MainWindow", "ADD DATA"))
         self.label_4.setText(_translate("MainWindow", "SHOW RECOGNIZED FACES"))
+
+        # 
+        self.images_LW_lbl.setText(_translate("MainWindow", "IMAGES"))
+        self.videos_LW_lbl.setText(_translate("MainWindow", "VIDEOS"))
+        self.profile_sec_lbl.setText(_translate("MainWindow", "PROFILE"))
+        self.name.setText(_translate("MainWindow", ""))
+        self.enc_time.setText(_translate("MainWindow", ""))
+        self.del_btn.setText(_translate("MainWindow", "DELETE ENCODINGS"))
         
         # settings panel page labels and buttons
         self.sett_panel_label.setText(_translate("MainWindow", "SETTINGS PANEL"))
@@ -596,7 +674,5 @@ class Ui_MainWindow(object):
         self.recognition_model_label.setText(_translate("MainWindow", "CHOOSE RECOGNITION MODEL"))
         self.processors_label.setText(_translate("MainWindow", "CHOOSE PROCESSORS"))
         self.save_sett_btn.setText(_translate("MainWindow", "SAVE"))
-
-
 
 
