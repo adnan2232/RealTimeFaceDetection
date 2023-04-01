@@ -3,8 +3,7 @@ from FaceRecognizer.fr_template import FaceRecogTemp
 import cv2 as cv
 
 
-
-def make_enc(vid_path,name):
+def store_video_enc(vid_path,name):
     fd =  MediaPipeWrapper()
     models = [FaceRecogTemp(model_name) for model_name in FaceRecogTemp.models]
     cap = cv.VideoCapture(vid_path)
@@ -33,4 +32,22 @@ def make_enc(vid_path,name):
     cap.release()
 
 
+def store_image_enc(img_paths,name):
+    fd =  MediaPipeWrapper()
+    models = [FaceRecogTemp(model_name) for model_name in FaceRecogTemp.models]
 
+    for img_path in img_paths:
+        img = cv.imread(img_path)
+        faces = fd.capture_faces(img)
+
+        if faces:
+            bbox = fd.get_bbox(faces[0],img.shape[0],img.shape[1])
+
+            for model in models:
+                model.create_save_encoding(
+                    name,
+                    cv.cvtColor(img,cv.COLOR_BGR2RGB),
+                    bbox[0][0],bbox[0][1],
+                    bbox[1][0],bbox[1][1],
+                    bbox[2][0], bbox[2][1]
+                )

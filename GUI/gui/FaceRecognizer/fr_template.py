@@ -12,9 +12,9 @@ class FaceRecogTemp:
 
     models = ["Facenet", "Facenet512", "ArcFace"]
     thresholds_global = {
-        "Facenet": {"cosine": 0.40, "l2": 10, "l2_norm": 0.80},
-        "Facenet512": {"cosine": 0.30, "l2": 23.56, "l2_norm": 1.04},
-        "ArcFace": {"cosine": 0.68, "l2": 4.15, "l2_norm": 1.13},
+        "Facenet": {"cosine": 0.40, "l2": 10, "l2_norm": 0.70},
+        "Facenet512": {"cosine": 0.30, "l2": 23.56, "l2_norm": 0.80},
+        "ArcFace": {"cosine": 0.68, "l2": 4.15, "l2_norm": 1.0},
         
     }
     
@@ -25,7 +25,7 @@ class FaceRecogTemp:
             raise ValueError(f"No model name: {model_name}")
 
         self.model_name = model_name
-        self.knn = KNeighborsClassifier(n_neighbors=2)
+        self.knn = KNeighborsClassifier(n_neighbors=3,weights="distance")
         self.encodings = self.fetch_encoding()
         self.thresholds = FaceRecogTemp.thresholds_global[model_name]
         self.fit_knn()
@@ -33,7 +33,7 @@ class FaceRecogTemp:
   
     def fetch_encoding(self) -> list[dict]:
         
-        return TinyDB(f"{self.model_name}.db").all()
+        return TinyDB(f"{self.model_name}.json").all()
 
     def create_encoding(
         self,
@@ -75,7 +75,7 @@ class FaceRecogTemp:
         return res
 
     def save_encoding(self, name: str, encoding: Union[list, np.array]) -> None:
-        TinyDB(f"{self.model_name}.db").insert({"name": name, "encoding": encoding})
+        TinyDB(f"{self.model_name}.json").insert({"name": name, "encoding": encoding})
     
 
     def create_save_encoding(
@@ -98,7 +98,7 @@ class FaceRecogTemp:
 
     def delete_encoding(self, name: str) -> None:
        
-        TinyDB(f"{self.model_name}.db").remove(Query().name == name)
+        TinyDB(f"{self.model_name}.json").remove(Query().name == name)
     
         
 
@@ -140,10 +140,11 @@ class FaceRecogTemp:
         dist = self.knn.kneighbors(vec)[0]
         name = self.knn.predict(vec)
         n = len(vec)
-
+     
         for i in range(n):
 
             if round(np.min(dist[i]), 2) <= self.thresholds["l2_norm"]:
+               
                 res_name.append(name[i])
                 res_conf.append(round(np.min(dist[i]), 2))
 

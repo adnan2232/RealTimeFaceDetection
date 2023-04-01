@@ -484,6 +484,7 @@ class Ui_MainWindow(object):
         self.detection_model_CB.setObjectName("detection_model_CB")
         detection_item = ['MTCNN', 'mediapipe']
         self.detection_model_index = {i:x for i,x in enumerate(detection_item)}
+        self.detection_model_to_index = {x:i for i,x in enumerate(detection_item)}
         self.detection_model_CB.addItems(detection_item)
         self.detection_model_CB.setCurrentIndex(1)
         # horizontal spacer between detection model label and detection model combobox
@@ -510,8 +511,9 @@ class Ui_MainWindow(object):
         self.recognition_model_CB.setObjectName("recognition_model_CB")
         recog_items = ['Facenet','Facenet512', 'ArcFace']
         self.recognition_model_index = {i:x for i,x in enumerate(recog_items)}
+        self.recognition_model_to_index = {x:i for i,x in enumerate(recog_items)}
         self.recognition_model_CB.addItems(recog_items)
-        self.recognition_model_CB.setCurrentIndex(1)
+        self.recognition_model_CB.setCurrentIndex(0)
         # horizontal spacer between recognition model label and recognition model combobox
         spacerItem7 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         # recognition model cell in horizontal layout

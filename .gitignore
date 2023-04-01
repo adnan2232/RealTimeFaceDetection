@@ -136,4 +136,6 @@ face_seen/
 **/feature_encoding.json
 uploaded_images/
 uploaded_videos/
+uploaded_images/
 *.db
+*.json

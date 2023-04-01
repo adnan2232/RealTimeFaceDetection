@@ -3,7 +3,7 @@ from PyQt5.QtGui import QKeyEvent, QImage, QPixmap
 from PyQt5.QtWidgets import QListWidgetItem, QFileDialog, QMainWindow, QApplication, QMessageBox, QPushButton, QShortcut
 from PyQt5.QtCore import pyqtSlot, Qt
 from threading import Thread
-from store_encoding import make_enc
+from store_encoding import store_video_enc,store_image_enc
 import shutil
 import os
 import numpy as np
@@ -12,6 +12,7 @@ from gui_ui import Ui_MainWindow
 from queue import Queue
 from videostream import VideoStream
 from facerecognition import FaceRecognition
+from tinydb import TinyDB, Query
 
 
 class MainWindow(QMainWindow):
@@ -29,13 +30,51 @@ class MainWindow(QMainWindow):
         self.ui.upload_videos_FL.addRow(QPushButton("BROWSE VIDEOS", clicked = lambda: self.upload_videos()))
         self.ui.add_camera_FL.addRow(QPushButton("ADD CAMERA", clicked = lambda: self.add_camera()))
         self.ui.save_sett_btn.clicked.connect(self.save_settings)
+        self.stateInfoDB = TinyDB('stateInfo.json')
+        self.stateInfo = self.initialize_state()
         self.ui.images_LW.itemClicked.connect(self.images_clicked_LW)
         self.ui.videos_LW.itemClicked.connect(self.videos_clicked_LW)
              
         self.queue = Queue(maxsize=1000)
+        self.start_camera()
+    
+    def initialize_state(self):
+     
+        state = self.stateInfoDB.all()
+        if not state:
+            state = {
+                'id':'0',
+                'detector':'mediapipe',
+                'recognizer':'Facenet',
+                'camera_info':'0'
+            }
+            self.stateInfoDB.insert(state)
+        else:
+            print(state)
+            state = state[0]
+        
+        self.set_detection_model(str(state['detector']))
+        self.set_recog_model(str(state['recognizer']))
+        self.set_camera_info(str(state['camera_info']))
+        return state
+    
+    def set_detection_model(self,model_name):
+        self.ui.detection_model_CB.setCurrentIndex(
+            self.ui.detection_model_to_index[model_name]
+        )
+
+    def set_recog_model(self,model_name):
+        self.ui.recognition_model_CB.setCurrentIndex(
+            self.ui.recognition_model_to_index[model_name]
+        )
+
+    def set_camera_info(self,camera_link):
+        self.cameraInfo = camera_link
+
+    def start_camera(self):
         self.start_video_thread()
         self.start_recog_thread()
-  
+
     def images_clicked_LW(self, item):
 
         if item.text() == '----NO DATA TO SHOW----':
@@ -81,18 +120,12 @@ class MainWindow(QMainWindow):
 
         # link delete encoding method here
         # self.ui.del_btn.clicked.connect()
-
-
-        
- 
     def start_video_thread(self):
-        self.detection_model_name = self.get_detection_model()
+
         self.video_thread =VideoStream(
             queue = self.queue,
-            username="aa2232786",
-            password="aa2232786",
-            IP="192.168.1.102",
-            detection_model = self.detection_model_name
+            camera_info=self.stateInfo['camera_info'],
+            detection_model = self.stateInfo['detector']
         ) 
         self.video_thread.stream_signal.connect(self.update_frame)
         self.video_thread.start()
@@ -100,10 +133,9 @@ class MainWindow(QMainWindow):
 
     def start_recog_thread(self):
       
-        self.recog_model_name = self.get_recog_model()
         self.recog_thread = FaceRecognition(
             queue = self.queue,
-            model_name = self.recog_model_name
+            model_name = self.stateInfo['recognizer']
         )
         self.recog_thread.start()
         
@@ -126,6 +158,10 @@ class MainWindow(QMainWindow):
     def get_recog_model(self):
         return self.ui.recognition_model_index[self.ui.recognition_model_CB.currentIndex()]
 
+    def stop_camera(self):
+        self.stop_video_thread()
+        self.stop_recog_thread(False)
+
     def stop_video_thread(self):
         
         self.video_thread.requestInterruption()
@@ -138,20 +174,33 @@ class MainWindow(QMainWindow):
     def change_detection_model(self):
 
         self.stop_video_thread()
+        model_name = self.get_detection_model()
+        self.stateInfoDB.update({'detector':model_name},Query().id=='0')
+        self.stateInfo['detector'] = model_name
+        self.set_detection_model(
+            model_name
+        )
         self.start_video_thread()
 
     def change_recog_model(self):
-        self.recog_model_name =self.get_recog_model()
+        model_name =self.get_recog_model()
         self.stop_recog_thread(False)
+        self.stateInfoDB.update({'recognizer':model_name},Query().id=='0')
+        self.stateInfo['recognizer'] = model_name
+        self.set_recog_model(
+            model_name
+        )
         self.start_recog_thread()
 
     def save_settings(self):
-        if self.detection_model_name != self.get_detection_model():
+        if self.stateInfo['detector'] != self.get_detection_model():
             self.change_detection_model()
-        if self.recog_model_name != self.get_recog_model():
+        if self.stateInfo['recognizer'] != self.get_recog_model():
             self.change_recog_model()
 
     def upload_images(self):
+        if self.recog_thread.isRunning():
+            self.stop_recog_thread(False)
         
         path = os.path.join(os.path.dirname(__file__), 'uploaded_images', self.ui.upload_images_text.text())
         try: os.mkdir(path)
@@ -159,16 +208,23 @@ class MainWindow(QMainWindow):
         img_paths, _ = QFileDialog.getOpenFileNames(None, "UPLOAD IMAGES", os.path.dirname(__file__), "Images (*.png *.jpg *.jpeg)")
         i = len(os.listdir(path))
         if img_paths:
+            fnames = []
             for img_path in img_paths:
                 img = cv2.imread(img_path)
-                os.chdir(path)
+                
                 fname = self.ui.upload_images_text.text()+"_"+str(i)+"."+str(img_path.split('.')[-1])
-                cv2.imwrite(fname, img)
+                fnames.append(os.path.join(path,fname))
+                cv2.imwrite(fnames[-1], img)
                 i+=1
             
-            QMessageBox.information(self.ui.upload_images_page, 'Success', 'Images uploaded successfully!')
-            self.ui.upload_images_text.clear()
-            self.update_list(page='images')
+            t1 = Thread(target=store_image_enc,args=(fnames,self.ui.upload_images_text.text()))
+            t1.start()
+            t1.join()
+
+        self.start_recog_thread()
+        QMessageBox.information(self.ui.upload_images_page, 'Success', 'Images uploaded successfully!')
+        self.ui.upload_images_text.clear()
+        self.update_list(page='images')
 
 
     def upload_videos(self):
@@ -193,21 +249,23 @@ class MainWindow(QMainWindow):
                 fname = name+"_"+str(i)+"."+str(vid_path.split('.')[-1])
                 path = os.path.join(path, fname)
                 shutil.copy(vid_path, path)
-                t1 = Thread(target=make_enc,args=(path,name))
+                t1 = Thread(target=store_video_enc,args=(path,name))
                 t1.start()
                 t1.join()
                 
-            self.start_recog_thread()
+        self.start_recog_thread()
           
-            QMessageBox.information(self.ui.upload_videos_page, 'Success', 'Videos uploaded successfully!')
-            self.ui.upload_videos_text.clear()
-            self.update_list(page='videos')
+        QMessageBox.information(self.ui.upload_videos_page, 'Success', 'Videos uploaded successfully!')
+        self.ui.upload_videos_text.clear()
+        self.update_list(page='videos')
 
     def add_camera(self):
         #do something
-
-
-
+        self.stop_camera()  
+        camera_info = self.ui.add_camera_text.text()
+        self.stateInfoDB.update({'camera_info':str(camera_info)},Query().id=='0')
+        self.stateInfo['camera_info']=str(camera_info)
+        self.start_camera() 
         # success msg
         QMessageBox.information(self.ui.add_camera_page, 'Success', 'Camera added successfully!')
         self.ui.add_camera_text.clear()
