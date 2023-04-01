@@ -6,16 +6,23 @@ from tinydb import TinyDB, Query
 from deepface import DeepFace
 import numpy as np
 from joblib import Parallel, delayed
+import cv2 as cv
 
 
 class FaceRecogTemp:
 
     models = ["Facenet", "Facenet512", "ArcFace"]
     thresholds_global = {
-        "Facenet": {"cosine": 0.40, "l2": 10, "l2_norm": 0.70},
+        "Facenet": {"cosine": 0.40, "l2": 10, "l2_norm": 0.80},
         "Facenet512": {"cosine": 0.30, "l2": 23.56, "l2_norm": 0.80},
-        "ArcFace": {"cosine": 0.68, "l2": 4.15, "l2_norm": 1.0},
+        "ArcFace": {"cosine": 0.68, "l2": 4.15, "l2_norm": 1},
         
+    }
+    target_sizes = {
+        "Facenet": (160, 160),
+        "Facenet512": (160, 160),
+        "ArcFace": (112, 112),
+  
     }
     
 
@@ -50,7 +57,7 @@ class FaceRecogTemp:
             try:
                 
                 enc = DeepFace.represent(
-                    img_path=self.normalize_input(al_img),
+                    img_path=cv.resize(self.normalize_input(al_img),FaceRecogTemp.target_sizes[self.model_name]),
                     model_name=self.model_name,
                     detector_backend="skip",
                 )
@@ -140,11 +147,11 @@ class FaceRecogTemp:
         dist = self.knn.kneighbors(vec)[0]
         name = self.knn.predict(vec)
         n = len(vec)
-     
+        print(dist)
         for i in range(n):
-
-            if round(np.min(dist[i]), 2) <= self.thresholds["l2_norm"]:
-               
+        
+            if np.min(dist[i]) <= self.thresholds["l2_norm"]:
+                
                 res_name.append(name[i])
                 res_conf.append(round(np.min(dist[i]), 2))
 
