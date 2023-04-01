@@ -147,7 +147,7 @@ class FaceRecogTemp:
         dist = self.knn.kneighbors(vec)[0]
         name = self.knn.predict(vec)
         n = len(vec)
-        print(dist)
+        
         for i in range(n):
         
             if np.min(dist[i]) <= self.thresholds["l2_norm"]:
