@@ -16,7 +16,7 @@ class VideoStream(QThread):
     def __init__(self, *arg, **kwargs) -> None:
         self.face_detector_model = kwargs["detection_model"]
         super(VideoStream, self).__init__()
-        self.camera_info = kwargs["camera_info"]
+        self.camera_info = kwargs["camera_info"] if kwargs['camera_info']!='0' else int(kwargs['camera_info'])
         self.MPqueue = kwargs["queue"]
         self._run_flag = True
         self.clah = cv.createCLAHE(clipLimit=3.0,tileGridSize=(7,7))
@@ -80,7 +80,7 @@ class VideoStream(QThread):
             
                 if len(detect_time)>5 and not np.isnan(med) and ceil(med)> detector_dropping:
                     print(detect_time)
-                    detector_dropping = min(fps,ceil(med))
+                    detector_dropping = min(10,ceil(med))
                     detect_time.clear()
                     print(detector_dropping)
                 elif len(detect_time)>5 and not np.isnan(med) and detector_dropping-ceil(med) >1:
@@ -116,7 +116,7 @@ class VideoStream(QThread):
 
                 if faces and frame_no%recognize_dropping==0:
                     
-                    #print(f"qsize: {curr_qsize}, dropping:{recognize_dropping}")
+                    print(f"qsize: {curr_qsize}, dropping:{recognize_dropping}")
                     self.MPqueue.put(
                         (frame.copy(), bboxes.copy(), curr_time.strftime("%H:%M:%S"))
                     )

@@ -44,18 +44,19 @@ class MainWindow(QMainWindow):
         state = self.stateInfoDB.all()
         if not state:
             state = {
+                'id':'0',
                 'detector':'mediapipe',
                 'recognizer':'Facenet',
-                'camera_info':'rtsp://aa2232786:aa2232786@192.168.1.103:554/stream1'
+                'camera_info':'0'
             }
             self.stateInfoDB.insert(state)
         else:
             print(state)
             state = state[0]
         
-        self.set_detection_model(state['detector'])
-        self.set_recog_model(state['recognizer'])
-        self.set_camera_info(state['camera_info'])
+        self.set_detection_model(str(state['detector']))
+        self.set_recog_model(str(state['recognizer']))
+        self.set_camera_info(str(state['camera_info']))
         return state
     
     def set_detection_model(self,model_name):
@@ -76,11 +77,11 @@ class MainWindow(QMainWindow):
         self.start_recog_thread()
 
     def start_video_thread(self):
-        self.detection_model_name = self.get_detection_model()
+
         self.video_thread =VideoStream(
             queue = self.queue,
             camera_info=self.stateInfo['camera_info'],
-            detection_model = self.detection_model_name
+            detection_model = self.stateInfo['detector']
         ) 
         self.video_thread.stream_signal.connect(self.update_frame)
         self.video_thread.start()
@@ -88,10 +89,9 @@ class MainWindow(QMainWindow):
 
     def start_recog_thread(self):
       
-        self.recog_model_name = self.get_recog_model()
         self.recog_thread = FaceRecognition(
             queue = self.queue,
-            model_name = self.recog_model_name
+            model_name = self.stateInfo['recognizer']
         )
         self.recog_thread.start()
         
@@ -130,17 +130,28 @@ class MainWindow(QMainWindow):
     def change_detection_model(self):
 
         self.stop_video_thread()
+        model_name = self.get_detection_model()
+        self.stateInfoDB.update({'detector':model_name},Query().id=='0')
+        self.stateInfo['detector'] = model_name
+        self.set_detection_model(
+            model_name
+        )
         self.start_video_thread()
 
     def change_recog_model(self):
-        self.recog_model_name =self.get_recog_model()
-        self.stop_video_thread()
-        self.start_recog_thread(True)
+        model_name =self.get_recog_model()
+        self.stop_recog_thread(False)
+        self.stateInfoDB.update({'recognizer':model_name},Query().id=='0')
+        self.stateInfo['recognizer'] = model_name
+        self.set_recog_model(
+            model_name
+        )
+        self.start_recog_thread()
 
     def save_settings(self):
-        if self.detection_model_name != self.get_detection_model():
+        if self.stateInfo['detector'] != self.get_detection_model():
             self.change_detection_model()
-        if self.recog_model_name != self.get_recog_model():
+        if self.stateInfo['recognizer'] != self.get_recog_model():
             self.change_recog_model()
 
     def upload_images(self):
@@ -207,12 +218,13 @@ class MainWindow(QMainWindow):
     def add_camera(self):
         #do something
         self.stop_camera()  
-        self.ui.add_camera_text.text()
-        print(self.ui.add_camera_text.text())
-
+        camera_info = self.ui.add_camera_text.text()
+        self.stateInfoDB.update({'camera_info':str(camera_info)},Query().id=='0')
+        self.stateInfo['camera_info']=str(camera_info)
+        self.start_camera() 
         # success msg
         QMessageBox.information(self.ui.add_camera_page, 'Success', 'Camera added successfully!')
-        self.ui.add_camera_text.clear()
+        
 
 
     # -----don't change this-----
