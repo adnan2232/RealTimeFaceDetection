@@ -134,6 +134,6 @@ lfw_home/
 video/
 face_seen/
 **/feature_encoding.json
-uploads/
+uploaded_images/
 uploaded_videos/
 *.db
