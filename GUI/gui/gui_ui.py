@@ -372,11 +372,13 @@ class Ui_MainWindow(object):
 
         # 
         self.image_lbl = QtWidgets.QLabel(self.profile_sec)
+        self.image_lbl.setObjectName('image_lbl')
         self.image_lbl.setScaledContents(True)
         self.image_lbl.setFixedSize(200, 300)
-        self.name = QtWidgets.QLabel(self.profile_sec)
-        self.enc_time = QtWidgets.QLabel(self.profile_sec)
-        self.del_btn = QtWidgets.QPushButton(self.profile_sec)
+        self.name = QtWidgets.QLabel('')
+        self.name.setObjectName('name')
+        # self.enc_time = QtWidgets.QLabel(self.profile_sec)
+        # self.del_btn = QtWidgets.QPushButton('DELETE ENCODINGS')
 
         #
         self.profWid = QtWidgets.QWidget()
@@ -386,9 +388,9 @@ class Ui_MainWindow(object):
         self.profGL = QtWidgets.QGridLayout()
         self.profGL.setObjectName("profGL")
         self.profGL.addWidget(self.image_lbl, 0, 0, 3, 1)
-        self.profGL.addWidget(self.name, 0, 1, 1, 1)
-        self.profGL.addWidget(self.enc_time, 1, 1, 1, 1)
-        self.profGL.addWidget(self.del_btn, 2, 1, 1, 1)
+        self.profGL.addWidget(self.name, 1, 1, 1, 1)
+        # self.profGL.addWidget(self.enc_time, 1, 1, 1, 1)
+        # self.profGL.addWidget(self.del_btn, 1, 1, 1, 1)
 
         self.profWid.setLayout(self.profGL)
 
@@ -405,9 +407,12 @@ class Ui_MainWindow(object):
 
 
         # 
-        self.images_LW_lbl = QtWidgets.QLabel()
-        self.videos_LW_lbl = QtWidgets.QLabel()
-        self.profile_sec_lbl = QtWidgets.QLabel()
+        self.images_LW_lbl = QtWidgets.QLabel('IMAGES')
+        self.images_LW_lbl.setObjectName('images_LW_lbl')
+        self.videos_LW_lbl = QtWidgets.QLabel('VIDEOS')
+        self.videos_LW_lbl.setObjectName('videos_LW_lbl')
+        self.profile_sec_lbl = QtWidgets.QLabel('PROFILE')
+        self.profile_sec_lbl.setObjectName('profile_sec_lbl')
 
 
         # 
@@ -595,10 +600,21 @@ class Ui_MainWindow(object):
         self.gridLayout_4 = QtWidgets.QGridLayout(self.recg_face_page)
         self.gridLayout_4.setObjectName("gridLayout_4")
         # recognize face label
-        self.label_4 = QtWidgets.QLabel(self.recg_face_page)
-        self.label_4.setAlignment(QtCore.Qt.AlignCenter)
-        self.label_4.setObjectName("label_4")
-        self.gridLayout_4.addWidget(self.label_4, 0, 0, 1, 1)
+        # self.label_4 = QtWidgets.QLabel(self.recg_face_page)
+        # self.label_4.setAlignment(QtCore.Qt.AlignCenter)
+        # self.label_4.setObjectName("label_4")
+
+        self.table_wid = QtWidgets.QTableWidget()
+        # self.table_wid.setItem(0, 0)
+
+        
+        self.table_wid.horizontalHeader().setStretchLastSection(True)
+        self.table_wid.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
+        self.table_wid.horizontalHeader().setVisible(False)
+        self.table_wid.verticalHeader().setVisible(False)
+        
+        self.gridLayout_4.addWidget(self.table_wid, 0, 0, 1, 1)
+
         self.stackedWidget.addWidget(self.recg_face_page)
 
 
@@ -658,15 +674,15 @@ class Ui_MainWindow(object):
         # content page label
         self.home_page_label.setText(_translate("MainWindow", "STREAM"))
         # self.label_3.setText(_translate("MainWindow", "ADD DATA"))
-        self.label_4.setText(_translate("MainWindow", "SHOW RECOGNIZED FACES"))
+        # self.label_4.setText(_translate("MainWindow", "SHOW RECOGNIZED FACES"))
 
         # 
-        self.images_LW_lbl.setText(_translate("MainWindow", "IMAGES"))
-        self.videos_LW_lbl.setText(_translate("MainWindow", "VIDEOS"))
-        self.profile_sec_lbl.setText(_translate("MainWindow", "PROFILE"))
-        self.name.setText(_translate("MainWindow", ""))
-        self.enc_time.setText(_translate("MainWindow", ""))
-        self.del_btn.setText(_translate("MainWindow", "DELETE ENCODINGS"))
+        # self.images_LW_lbl.setText(_translate("MainWindow", "IMAGES"))
+        # self.videos_LW_lbl.setText(_translate("MainWindow", "VIDEOS"))
+        # self.profile_sec_lbl.setText(_translate("MainWindow", "PROFILE"))
+        # self.name.setText(_translate("MainWindow", ""))
+        # self.enc_time.setText(_translate("MainWindow", ""))
+        # self.del_btn.setText(_translate("MainWindow", "DELETE ENCODINGS"))
         
         # settings panel page labels and buttons
         self.sett_panel_label.setText(_translate("MainWindow", "SETTINGS PANEL"))

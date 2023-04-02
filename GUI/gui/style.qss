@@ -120,12 +120,40 @@
 
 /* upload images and upload videos page css end */
 
-/*  */
+/* show data css start*/
 
-#show_data_page QWidget {
-    border: 1px solid black;
+#images_LW_lbl, #videos_LW_lbl, #profile_sec_lbl, #name {
+    qproperty-alignment: AlignCenter;
+    background-color: #728EB2;
+    border-radius: 3px;
+    padding: 5px;
+    margin-right: 5px;
 }
 
-/*  */
+#name {
+    border-radius: 10px;
+    padding: 0px 50px;
+    margin: 20px 0px;
+}
+
+#image_lbl {
+    border: 2px solid black;
+    border-radius: 3px;
+}
+
+/* #show_data_page QPushButton {
+    background-color: #00043d;
+    color: #fff;
+    border-radius: 3px;
+    padding: 5px;
+    margin-left: 15px;
+    margin-right: 15px;
+}
+
+#show_data_page QPushButton:hover {
+    background-color: rgba(0, 4, 61, 0.8);
+} */
+
+/* show data css end */
 
 /* content page css end */
