@@ -1,12 +1,13 @@
 import sys
 from PyQt5.QtGui import QKeyEvent, QImage, QPixmap
-from PyQt5.QtWidgets import QListWidgetItem, QFileDialog, QMainWindow, QApplication, QMessageBox, QPushButton, QShortcut
+from PyQt5.QtWidgets import QTableWidgetItem, QListWidgetItem, QFileDialog, QMainWindow, QApplication, QMessageBox, QPushButton, QShortcut
 from PyQt5.QtCore import pyqtSlot, Qt
 from threading import Thread
 from store_encoding import store_video_enc,store_image_enc
 import shutil
 import os
 import numpy as np
+import pandas as pd
 import cv2 as cv2
 from gui_ui import Ui_MainWindow
 from queue import Queue
@@ -88,12 +89,6 @@ class MainWindow(QMainWindow):
         self.ui.profile_sec.show()
         self.ui.name.setText(item.text())
 
-        # get encoding generated time here
-        self.ui.enc_time.setText('--time--')
-
-        # link delete encoding method here
-        # self.ui.del_btn.clicked.connect()
-
     def videos_clicked_LW(self, item):
 
         if item.text() == '----NO DATA TO SHOW----':
@@ -115,11 +110,44 @@ class MainWindow(QMainWindow):
         self.ui.profile_sec.show()
         self.ui.name.setText(item.text())
 
-        # get encoding generated time here
-        self.ui.enc_time.setText('--time--')
+    def show_recog_faces(self):
+        folder = os.path.join(os.path.dirname(__file__), 'face_seen')
+        files = os.listdir(folder)
+        cols = 5
+        rows = 1
+        for file in files:
+            try:
+                df = pd.read_csv(os.path.join(folder, file), header=None)
+                rows += len(df)
+            except Exception as e:
+                print(e)
 
-        # link delete encoding method here
-        # self.ui.del_btn.clicked.connect()
+        self.ui.table_wid.setRowCount(rows)
+        self.ui.table_wid.setColumnCount(cols)
+        self.ui.table_wid.setItem(0, 0, QTableWidgetItem("Sr. No."))
+        self.ui.table_wid.setItem(0, 1, QTableWidgetItem("Date"))
+        self.ui.table_wid.setItem(0, 2, QTableWidgetItem("Name"))
+        self.ui.table_wid.setItem(0, 3, QTableWidgetItem("From"))
+        self.ui.table_wid.setItem(0, 4, QTableWidgetItem("To"))
+
+        row = 1
+
+        for file in files:
+            date = file.split('.')[0]
+            try:
+                df = pd.read_csv(os.path.join(folder, file), header=None)
+                # print(len(df))
+                for k in range(len(df)):
+                    self.ui.table_wid.setItem(row, 0, QTableWidgetItem(str(row)))
+                    self.ui.table_wid.setItem(row, 1, QTableWidgetItem(date))
+                    self.ui.table_wid.setItem(row, 2, QTableWidgetItem(df.iloc[k, 0]))
+                    self.ui.table_wid.setItem(row, 3, QTableWidgetItem(df.iloc[k, 1]))
+                    self.ui.table_wid.setItem(row, 4, QTableWidgetItem(df.iloc[k, 2]))
+                    row += 1
+            except Exception as e:
+                print(e)
+
+
     def start_video_thread(self):
 
         self.video_thread =VideoStream(
@@ -206,6 +234,7 @@ class MainWindow(QMainWindow):
         try: os.mkdir(path)
         except OSError: pass
         img_paths, _ = QFileDialog.getOpenFileNames(None, "UPLOAD IMAGES", os.path.dirname(__file__), "Images (*.png *.jpg *.jpeg)")
+        if len(img_paths) == 0: return
         i = len(os.listdir(path))
         if img_paths:
             fnames = []
@@ -238,6 +267,7 @@ class MainWindow(QMainWindow):
         if not os.path.isdir(path):
             os.makedirs(path)
         vid_paths, _ = QFileDialog.getOpenFileNames(None, "UPLOAD VIDEOS", os.path.dirname(__file__), "Videos (*.mp4)")
+        if len(vid_paths) == 0: return
         
         file_list = os.listdir(path)
         if 'first_frame.jpg' in file_list:
@@ -359,6 +389,7 @@ class MainWindow(QMainWindow):
         self.ui.stackedWidget.setCurrentIndex(5)
         self.toggleShadow(self.ui.sett_panel_btn, self.ui.sett_panel_btn_shadow)
     def on_recg_face_btn_toggled(self):
+        self.show_recog_faces()
         self.ui.stackedWidget.setCurrentIndex(6)
         self.toggleShadow(self.ui.recg_face_btn, self.ui.recg_face_btn_shadow)
     # -------------------------
