@@ -26,6 +26,10 @@ class FaceRecognition(QThread):
         self.writer = csv.writer(self.seen_file)
         self.writerTimer = QTimer(self)
         self.writerTimer.timeout.connect(self.writeCSV)
+        self.writerTimer.start(50000)
+
+        self.flushTimer = QTimer(self)
+        self.writerTimer.timeout.connect(self.seen_file.flush)
         self.writerTimer.start(60000)
 
         self.seen = {}

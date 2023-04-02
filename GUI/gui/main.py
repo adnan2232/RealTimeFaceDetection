@@ -91,10 +91,12 @@ class MainWindow(QMainWindow):
 
     def videos_clicked_LW(self, item):
 
-        if item.text() == '----NO DATA TO SHOW----':
-            return
 
         folder = os.path.join(os.path.dirname(__file__), 'uploaded_videos', item.text())
+
+        if item.text() == '----NO DATA TO SHOW----' or len(os.listdir(folder))<=0:
+            return
+        
         filename = os.path.join(folder, os.listdir(folder)[0])
 
         # extracting first frame
