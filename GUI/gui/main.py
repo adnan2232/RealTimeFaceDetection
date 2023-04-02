@@ -216,10 +216,10 @@ class MainWindow(QMainWindow):
                 fnames.append(os.path.join(path,fname))
                 cv2.imwrite(fnames[-1], img)
                 i+=1
-            
-            t1 = Thread(target=store_image_enc,args=(fnames,self.ui.upload_images_text.text()))
-            t1.start()
-            t1.join()
+            store_image_enc(fnames,self.ui.upload_images_text.text())
+            # t1 = Thread(target=store_image_enc,args=(fnames,self.ui.upload_images_text.text()))
+            # t1.start()
+            # t1.join()
 
         self.start_recog_thread()
         QMessageBox.information(self.ui.upload_images_page, 'Success', 'Images uploaded successfully!')
@@ -249,9 +249,10 @@ class MainWindow(QMainWindow):
                 fname = name+"_"+str(i)+"."+str(vid_path.split('.')[-1])
                 path = os.path.join(path, fname)
                 shutil.copy(vid_path, path)
-                t1 = Thread(target=store_video_enc,args=(path,name))
-                t1.start()
-                t1.join()
+                store_video_enc(path,name)
+                # t1 = Thread(target=store_video_enc,args=(path,name))
+                # t1.start()
+                # t1.join()
                 
         self.start_recog_thread()
           

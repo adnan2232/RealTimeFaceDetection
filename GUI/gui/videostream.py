@@ -116,7 +116,7 @@ class VideoStream(QThread):
 
                 if faces and frame_no%recognize_dropping==0:
                     
-                    print(f"qsize: {curr_qsize}, dropping:{recognize_dropping}")
+                    # print(f"qsize: {curr_qsize}, dropping:{recognize_dropping}")
                     self.MPqueue.put(
                         (frame.copy(), bboxes.copy(), curr_time.strftime("%H:%M:%S"))
                     )
