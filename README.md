@@ -1,4 +1,4 @@
-# Note
+# Before you dive into it
 This project is a prototype few bugs maybe crawling somewhere but its a good place to start if you're looking for some real-time traiditional algorithm, deep learning and machine learning based application
 
 # Real-Time Face Detection Recognition
