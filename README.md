@@ -1,5 +1,5 @@
 # Before you dive into it
-This project is a prototype few bugs maybe crawling somewhere but its a good place to start if you're looking for some real-time traiditional algorithm, deep learning and machine learning based application
+This project is a prototype few bugs maybe crawling somewhere but its a good place to start if you're looking for some integration of traiditional, deep learning and machine learning algorithms based real-time application
 
 # Real-Time Face Detection Recognition
 This application is created for Real-time face detection and recognition integrating with CCTV (rtsp protocol), cloud repo or any stored-file in pc. It leverages the power of multiple cores
