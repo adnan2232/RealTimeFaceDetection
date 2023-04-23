@@ -114,6 +114,9 @@ class MainWindow(QMainWindow):
 
     def show_recog_faces(self):
         folder = os.path.join(os.path.dirname(__file__), 'face_seen')
+        if not os.path.isdir(folder):
+            os.mkdir(folder)
+            
         files = os.listdir(folder)
         cols = 5
         rows = 1

@@ -139,3 +139,7 @@ uploaded_videos/
 uploaded_images/
 *.db
 *.json
+
+#Deployment
+runnable/
+runnable.*
